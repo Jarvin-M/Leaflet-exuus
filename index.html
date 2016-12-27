@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Exuus Leaflet Map</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <style>
+    #map{ height: 720px; width:900px; display: block; margin: auto;}
+    .info {padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;}
+    .info h4 {margin: 0 0 10px;color: #777;}
+    .legend {line-height: 18px;color: #555;}
+    .legend i {width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.7;}
+
+   
+    </style>
+</head>
+<body>
+<ul>
+<li>
+   <select id="geolevel" onchange="handler();" >
+   <option value="">Location </option>
+       <option value="a"> Provinces</option>
+       <option value="b">Districts</option>
+       <option value ="c">Sectors</option>
+   </select>
+</li>
+<li>
+    <select id="province" onchange="handler();" >
+   <option value="">Provinces </option>
+       <option value="aa"> Eastern Province</option>
+       <option value="ba">Western Province</option>
+       <option value ="ca">Kigali City</option>
+       <option value ="da">Northern Province</option>
+       <option value ="ca">Southern Province</option>
+   </select>
+</li>
+  </ul> 
+<div id="map"></div>
+
+    <script>
+    
+        var map = L.map('map',{zoomControl: true}).setView([-2.0334,29.8993], 8);
+       map.zoomControl.setPosition('topright');
+        mapLink = 
+            '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+        L.tileLayer(
+            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; ' + mapLink,
+            maxZoom: 18,
+            minZoom: 9
+            }).addTo(map);
+
+      //provinces
+        function getColor(d) {
+            return d > 5001 ? '#a50f15':
+                   d > 4001  ? '#de2d26':
+                   d > 3001  ? '#fb6a4a':
+                   d > 0  ? '#fcae91': 
+                            '#fee5d9';
+                }
+        function style(feature) {
+            return {
+                fillColor: getColor(feature.properties.density),
+                weight: 2,
+                opacity: 10,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 10
+            };
+        }
+        
+function provinceDisplay(){
+    
+         $.getJSON("admin4.geojson",function(rwandaData){
+            geojson = L.geoJson( rwandaData, {
+              style: style,
+              onEachFeature: onEachFeature
+            }).addTo(map);
+          });
+}
+        function onEachFeature(feature, layer) {
+            layer.on({
+                mouseover: highlightFeature,
+                mouseout: resetHighlight
+                
+            });
+        }
+        
+
+        function highlightFeature(e) {
+             var layer = e.target;
+
+            layer.setStyle({
+                weight: 5,
+                color: '#666',
+                dashArray: '',
+                fillOpacity: 3
+            });
+
+
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+
+            info.update(layer.feature.properties);
+            
+        }
+
+        function resetHighlight(e) {
+             geojson.resetStyle(e.target);
+            info.update();
+        }
+
+
+        //custom control within the map
+         var info = L.control({position:'topleft'});
+
+        info.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+
+        // method that we will use to update the control based on feature properties passed
+        info.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Province</h4>' +  (props ?
+                '<b>' + props.Name + ' Province</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a province');
+        };
+
+        
+
+        //legend
+        var legend = L.control({position: 'bottomright'});
+
+        legend.onAdd = function (map) {
+
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 3001, 4001, 5001],
+                labels = [];
+
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+
+            return div;
+        };
+
+        
+
+        //districts
+
+        function getColorD(d) {
+            return d > 2001 ? '#00441b':
+                   d > 1001  ? '#006d2c':
+                   d > 801  ? '#238b45':
+                   d > 601  ? '#41ab5d': 
+                   d > 401  ? '#74c476':
+                   d > 201  ? '#a1d99b':
+                   d > 0  ? '#c7e9c0':
+                            '#e5f5e0';
+                }
+  
+
+        function styleD(feature) {
+            return {
+                fillColor: getColorD(feature.properties.density),
+                weight: 2,
+                opacity: 10,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 10
+            };
+        }
+ 
+ function districtDisplay(){
+       $.getJSON("District_Rwanda.geojson",function(rwandaData){
+            geojson = L.geoJson( rwandaData, {
+              style: styleD,
+              onEachFeature: onEachFeatureD
+            }).addTo(map);
+          });
+}
+        function onEachFeatureD(feature, layer) {
+            layer.on({
+                mouseover: highlightFeatureD,
+                mouseout: resetHighlightD
+                
+            });
+        }
+        
+
+        function highlightFeatureD(e) {
+             var layer = e.target;
+
+            layer.setStyle({
+                weight: 5,
+                color: '#666',
+                dashArray: '',
+                fillOpacity: 3
+            });
+
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+
+            infoD.update(layer.feature.properties);
+        }
+
+        function resetHighlightD(e) {
+             geojson.resetStyle(e.target);
+            infoD.update();
+        }
+
+
+        //custom control within the map
+         var infoD = L.control({position:'topleft'});
+
+        infoD.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+
+        // method that we will use to update the control based on feature properties passed
+        infoD.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per District</h4>' +  (props ?
+                '<b>' + props.Name + ' District</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a district');
+        };
+
+        
+
+        //legend
+        var legendD = L.control({position: 'bottomright'});
+
+        legendD.onAdd = function (map) {
+
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 201, 401, 601, 801, 1001, 2001,],
+                labels = [];
+
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorD(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+
+            return div;
+        };
+
+ 
+
+//sectors
+function getColorS(d) {
+            return d > 141 ? '#7f2704':
+                   d > 121  ? '#a63603':
+                   d > 101  ? '#d94801':
+                   d > 81  ? '#f16913': 
+                   d > 61  ? '#fd8d3c':
+                   d > 41  ? '#fdae6b':
+                   d > 21  ? '#fdd0a2':
+                   d > 0  ? '#fee6ce':
+                            '#fff5eb';
+                }
+  
+        function styleS(feature) {
+            return {
+                fillColor: getColorS(feature.properties.density),
+                weight: 2,
+                opacity: 10,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 10
+            };
+        }
+ 
+        function sectorDisplay(){
+             $.getJSON("Sector_Rwanda.geojson",function(rwandaData){
+            geojson = L.geoJson( rwandaData, {
+              style: styleS,
+              onEachFeature: onEachFeatureS
+            }).addTo(map);
+          });
+}
+        function onEachFeatureS(feature, layer) {
+            layer.on({
+                mouseover: highlightFeatureS,
+                mouseout: resetHighlightS
+                
+            });
+        }
+        
+
+        function highlightFeatureS(e) {
+             var layer = e.target;
+
+            layer.setStyle({
+                weight: 5,
+                color: '#666',
+                dashArray: '',
+                fillOpacity: 3
+            });
+
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+
+            infoS.update(layer.feature.properties);
+        }
+
+        function resetHighlightS(e) {
+             geojson.resetStyle(e.target);
+            infoS.update();
+        }
+
+
+        //custom control within the map
+         var infoS = L.control({position:'topleft'});
+
+        infoS.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+
+        // method that we will use to update the control based on feature properties passed
+        infoS.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a Sector');
+        };
+
+        
+
+        //legend
+        var legendS = L.control({position: 'bottomright'});
+
+        legendS.onAdd = function (map) {
+
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 21, 41, 61, 81, 101, 121,141],
+                labels = [];
+
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorS(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+
+            return div;
+        };
+
+ 
+//onclick handlers
+        function handle1(){
+             provinceDisplay();
+             map.removeControl(legendD);
+             map.removeControl(infoD);
+             map.removeControl(legendS);
+             map.removeControl(infoS);
+                  legend.addTo(map);
+                  info.addTo(map); 
+        }
+        function handle2(){
+           districtDisplay();
+           map.removeControl(legend);
+             map.removeControl(info);
+             map.removeControl(legendS);
+             map.removeControl(infoS);
+                     legendD.addTo(map);
+                     infoD.addTo(map); 
+        }
+        function handle3(){
+           sectorDisplay();
+           map.removeControl(legend);
+             map.removeControl(info);
+             map.removeControl(legendD);
+             map.removeControl(infoD);
+                     legendS.addTo(map);
+                     infoS.addTo(map); 
+        }
+
+    function handler(){
+        if (document.getElementById('geolevel').value == 'a'){
+            handle1();
+        }
+        else if (document.getElementById('geolevel').value == 'b'){
+            handle2();
+        }
+        else if (document.getElementById('geolevel').value == 'c'){
+            handle3();
+        }
+    }
+    </script>
+</body>
+</html>
