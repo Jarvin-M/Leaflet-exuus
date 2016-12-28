@@ -33,17 +33,17 @@
        <option value="ba">Western Province</option>
        <option value ="ca">Kigali City</option>
        <option value ="da">Northern Province</option>
-       <option value ="ca">Southern Province</option>
+       <option value ="ea">Southern Province</option>
    </select>
 </li>
 <li>
     <select id="district" onchange="handler();" >
    <option value="">Districts </option>
-       <option value="aa"> Eastern Province</option>
-       <option value="ba">Western Province</option>
-       <option value ="ca">Kigali City</option>
-       <option value ="da">Northern Province</option>
-       <option value ="ca">Southern Province</option>
+       <option value="ab"> Eastern Province</option>
+       <option value="bb">Western Province</option>
+       <option value ="cc">Kigali City</option>
+       <option value ="dc">Northern Province</option>
+       <option value ="ec">Southern Province</option>
    </select>
 </li>
   </ul> 
@@ -86,13 +86,24 @@
         
 function provinceDisplay(){
     
-        
+        if(geojson === undefined){
+
+
+            $.getJSON("admin4.geojson",function(rwandaData){
+            geojson = L.geoJson( rwandaData, {
+              style: style,
+              onEachFeature: onEachFeature
+            }).addTo(map);
+          });
+        } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
          $.getJSON("admin4.geojson",function(rwandaData){
             geojson = L.geoJson( rwandaData, {
               style: style,
               onEachFeature: onEachFeature
             }).addTo(map);
           });
+         }
 }
         function onEachFeature(feature, layer) {
             layer.on({
@@ -193,13 +204,23 @@ function provinceDisplay(){
         }
  
  function districtDisplay(){
-    
+    if(geojson === undefined){
        $.getJSON("District_Rwanda.geojson",function(rwandaData){
             geojson = L.geoJson( rwandaData, {
               style: styleD,
               onEachFeature: onEachFeatureD
             }).addTo(map);
           });
+    }
+    else{
+        geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+        $.getJSON("District_Rwanda.geojson",function(rwandaData){
+            geojson = L.geoJson( rwandaData, {
+              style: styleD,
+              onEachFeature: onEachFeatureD
+            }).addTo(map);
+          });
+    }
 }
         function onEachFeatureD(feature, layer) {
             layer.on({
@@ -556,7 +577,7 @@ function getColorS(d) {
 
         function highlightFeatureN(e) {
              var layer = e.target;
-
+            geojson.setStyle({weight: 7,color: 'rgba(0,0,0,0)'});
             layer.setStyle({
                 weight: 5,
                 color: '#666',
@@ -614,6 +635,117 @@ function getColorS(d) {
             return div;
         };
 
+//southern Province
+        function getColorSN(d) {
+            return d > 2001 ? '#7f2704':
+                   d > 1501 ? '#a63603':
+                   d > 1001 ? '#d94801':
+                   d > 501  ? '#f16913': 
+                   d > 0  ? '#fd8d3c':
+                            '#fff5eb';
+                }
+  
+        function styleSN(feature) {
+            return {
+                fillColor: getColorSN(feature.properties.density),
+                weight: 2,
+                opacity: 10,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 10
+            };
+        }
+ 
+        function southDisplay(){
+            if(geojson ===  undefined ){
+
+             $.getJSON("Southern_Province.geojson",function(rwandaData){
+            geojson = L.geoJson( rwandaData, {
+              style: styleSN,
+              onEachFeature: onEachFeatureSN
+            }).addTo(map);
+          });
+
+         }
+         else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+
+            $.getJSON("Southern_Province.geojson",function(rwandaData){
+            geojson = L.geoJson( rwandaData, {
+              style: styleSN,
+              onEachFeature: onEachFeatureSN
+            }).addTo(map);
+          });
+         }
+}
+        function onEachFeatureSN(feature, layer) {
+            layer.on({
+                mouseover: highlightFeatureSN,
+                mouseout: resetHighlightSN
+                
+            });
+        }
+        
+
+        function highlightFeatureSN(e) {
+             var layer = e.target;
+
+            layer.setStyle({
+                weight: 5,
+                color: '#666',
+                dashArray: '',
+                fillOpacity: 3
+            });
+
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+
+            infoSN.update(layer.feature.properties);
+        }
+
+        function resetHighlightSN(e) {
+             geojson.resetStyle(e.target);
+            infoSN.update();
+        }
+
+
+        //custom control within the map
+         var infoSN = L.control({position:'topleft'});
+
+        infoSN.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+
+        // method that we will use to update the control based on feature properties passed
+        infoSN.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups in Southern Province</h4>' +  (props ?
+                '<b>' + props.Name + ' District</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a District');
+        };
+
+        
+
+        //legend
+        var legendSN = L.control({position: 'bottomright'});
+
+        legendSN.onAdd = function (map) {
+
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 201, 401, 601],
+                labels = [];
+
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorSN(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+
+            return div;
+        };
 //onclick handlers
         
     function handler(){
@@ -646,27 +778,26 @@ function getColorS(d) {
                      legendS.addTo(map);
                      infoS.addTo(map); 
         }else if (document.getElementById('province').value == 'ca'){
-            window.location.replace();
+            //window.location.replace();
             kigaliDisplay();
-           map.removeControl(legend);
-             map.removeControl(info);
-             map.removeControl(legendD);
-             map.removeControl(infoD);
-             map.removeControl(legendS);
-             map.removeControl(infoS);
+           map.removeControl(legendN);
+             map.removeControl(infoN);
                      legendK.addTo(map);
                      infoK.addTo(map); 
         }else if (document.getElementById('province').value == 'da'){
             
             northDisplay();
-           map.removeControl(legend);
-             map.removeControl(info);
-             map.removeControl(legendD);
-             map.removeControl(infoD);
-             map.removeControl(legendS);
-             map.removeControl(infoS);
+           map.removeControl(legendK);
+             map.removeControl(infoK);
                      legendN.addTo(map);
                      infoN.addTo(map); 
+        }else if (document.getElementById('province').value == 'ea'){
+            
+            southDisplay();
+           map.removeControl(legendK);
+             map.removeControl(infoK);
+                     legendSN.addTo(map);
+                     infoSN.addTo(map); 
         }
 
     }
