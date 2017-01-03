@@ -1,0 +1,216 @@
+{
+  "Districts": [
+    {
+      "Districts": "Gisagara",
+      "Membership": "31545",
+      "Female": "25702",
+      "Male": "5843"
+    },
+    {
+      "Districts": "Huye",
+      "Membership": "33461",
+      "Female": "26064",
+      "Male": "7397"
+    },
+    {
+      "Districts": "Kamonyi",
+      "Membership": "4593",
+      "Female": "3471",
+      "Male": "1122"
+    },
+    {
+      "Districts": "Muhanga",
+      "Membership": "8943",
+      "Female": "6425",
+      "Male": "2518"
+    },
+    {
+      "Districts": "Nyamagabe",
+      "Membership": "45458",
+      "Female": "33524",
+      "Male": "11934"
+    },
+    {
+      "Districts": "Nyanza",
+      "Membership": "23664",
+      "Female": "18066",
+      "Male": "5598"
+    },
+    {
+      "Districts": "Nyaruguru",
+      "Membership": "27819",
+      "Female": "21477",
+      "Male": "6342"
+    },
+    {
+      "Districts": "Ruhango",
+      "Membership": "21691",
+      "Female": "16949",
+      "Male": "4742"
+    },
+    {
+      "Districts": "Burera",
+      "Membership": "12049",
+      "Female": "8817",
+      "Male": "3232"
+    },
+    {
+      "Districts": "Gakenke",
+      "Membership": "11212",
+      "Female": "8237",
+      "Male": "2975"
+    },
+    {
+      "Districts": "Gicumbi",
+      "Membership": "23328",
+      "Female": "16901",
+      "Male": "6427"
+    },
+    {
+      "Districts": "Musanze",
+      "Membership": "18358",
+      "Female": "13699",
+      "Male": "4659"
+    },
+    {
+      "Districts": "Rulindo",
+      "Membership": "15514",
+      "Female": "12535",
+      "Male": "2979"
+    },
+    {
+      "Districts": "Gasabo",
+      "Membership": "9438",
+      "Female": "7495",
+      "Male": "1943"
+    },
+    {
+      "Districts": "Kicukiro",
+      "Membership": "8099",
+      "Female": "6191",
+      "Male": "1908"
+    },
+    {
+      "Districts": "Nyarugenge",
+      "Membership": "1148",
+      "Female": "798",
+      "Male": "350"
+    },
+    {
+      "Districts": "Karongi",
+      "Membership": "23779",
+      "Female": "17033",
+      "Male": "6761"
+    },
+    {
+      "Districts": "Ngororero",
+      "Membership": "17021",
+      "Female": "12525",
+      "Male": "4496"
+    },
+    {
+      "Districts": "Nyabihu",
+      "Membership": "9395",
+      "Female": "7681",
+      "Male": "1714"
+    },
+    {
+      "Districts": "Nyamasheke",
+      "Membership": "10585",
+      "Female": "6692",
+      "Male": "3893"
+    },
+    {
+      "Districts": "Rubavu",
+      "Membership": "6840",
+      "Female": "4909",
+      "Male": "1931"
+    },
+    {
+      "Districts": "Rusizi",
+      "Membership": "8722",
+      "Female": "6147",
+      "Male": "2575"
+    },
+    {
+      "Districts": "Rutsiro",
+      "Membership": "5391",
+      "Female": "3713",
+      "Male": "1678"
+    },
+    {
+      "Districts": "Bugesera",
+      "Membership": "100319",
+      "Female": "71932",
+      "Male": "28387"
+    },
+    {
+      "Districts": "Gatsibo",
+      "Membership": "22420",
+      "Female": "15734",
+      "Male": "6686"
+    },
+    {
+      "Districts": "Kayonza",
+      "Membership": "11327",
+      "Female": "8318",
+      "Male": "3009"
+    },
+    {
+      "Districts": "Kirehe",
+      "Membership": "12730",
+      "Female": "8620",
+      "Male": "4110"
+    },
+    {
+      "Districts": "Ngoma",
+      "Membership": "11515",
+      "Female": "7571",
+      "Male": "3944"
+    },
+    {
+      "Districts": "Nyagatare",
+      "Membership": "14750",
+      "Female": "11406",
+      "Male": "3344"
+    },
+    {
+      "Districts": "Rwamagana",
+      "Membership": "9958",
+      "Female": "8335",
+      "Male": "1623"
+    }
+  ],
+  "Provinces": [
+    {
+      "Province": "Eastern",
+      "Membership": "100319",
+      "Female": "71932",
+      "Male": "28387"
+    },
+    {
+      "Province": "Northern",
+      "Membership": "80461",
+      "Female": "60189",
+      "Male": "20272"
+    },
+    {
+      "Province": "Western",
+      "Membership": "81748",
+      "Female": "58700",
+      "Male": "23048"
+    },
+    {
+      "Province": "Kigali City",
+      "Membership": "18685",
+      "Female": "14484",
+      "Male": "4201"
+    },
+    {
+      "Province": "Southern",
+      "Membership": "197182",
+      "Female": "151684",
+      "Male": "45498"
+    }
+  ]
+}

@@ -19,7 +19,7 @@
 <body>
 <ul>
 <li>
-   <select id="geolevel" onchange="handler();" >
+   <select id="geolevel" onchange="handler();" autocomplete = "off" >
    <option value="">Location </option>
        <option value="a"> Provinces</option>
        <option value="b">Districts</option>
@@ -27,7 +27,7 @@
    </select>
 </li>
 <li>
-    <select id="province" onchange="handler();" >
+    <select id="province" onchange="handler1();" autocomplete = "off" >
    <option value="">Provinces </option>
        <option value="aa"> Eastern Province</option>
        <option value="ba">Western Province</option>
@@ -37,13 +37,39 @@
    </select>
 </li>
 <li>
-    <select id="district" onchange="handler();" >
+    <select id="district" onchange="handler2();" >
    <option value="">Districts </option>
-       <option value="ab"> Eastern Province</option>
-       <option value="bb">Western Province</option>
-       <option value ="cc">Kigali City</option>
-       <option value ="dc">Northern Province</option>
-       <option value ="ec">Southern Province</option>
+       <option value="ac"> Gasabo District</option>
+       <option value="bc"> Kicukiro District</option>
+       <option value ="cc">Nyarugenge District</option>
+       <option value ="dc">Burera District</option>
+       <option value ="ec">Gakenke District</option>
+       <option value ="fc">Gicumbi District</option>
+       <option value ="gc">Musanze District</option>
+       <option value ="hc">Rulindo District</option>
+       <option value ="ic">Gisagara District</option>
+       <option value ="jc">Huye District</option>
+       <option value ="kc">Kamonyi District</option>
+       <option value ="lc">Muhanga District</option>
+       <option value ="mc">Nyamagabe District</option>
+       <option value ="nc">Nyanza District</option>
+       <option value ="oc">Nyaruguru District</option>
+       <option value ="pc">Ruhango District</option>
+       <option value ="qc">Karongi District</option>
+       <option value ="rc">Ngororero District</option>
+       <option value ="sc">Nyabihu District</option>
+       <option value ="tc">Nyamasheke District</option>
+       <option value ="uc">Rubavu District</option>
+       <option value ="vc">Rusizi District</option>
+       <option value ="wc">Rutsiro District</option>
+       <option value ="xc">Bugesera District</option>
+       <option value ="yc">Gatsibo District</option>
+       <option value ="zc">Kayonza District</option>
+       <option value ="ab">Kirehe District</option>
+       <option value ="bb">Ngoma District</option>
+       <option value ="cb">Nyagatare District</option>
+       <option value ="dd">Rwamagana District</option>
+       
    </select>
 </li>
   </ul> 
@@ -577,7 +603,7 @@ function getColorS(d) {
 
         function highlightFeatureN(e) {
              var layer = e.target;
-            geojson.setStyle({weight: 7,color: 'rgba(0,0,0,0)'});
+           // geojson.setStyle({weight: 7,color: 'rgba(0,0,0,0)'});
             layer.setStyle({
                 weight: 5,
                 color: '#666',
@@ -746,6 +772,2296 @@ function getColorS(d) {
 
             return div;
         };
+
+//Western Province
+        function getColorW(d) {
+            return d > 2001 ? '#7f2704':
+                   d > 1501 ? '#a63603':
+                   d > 1001 ? '#d94801':
+                   d > 501  ? '#f16913': 
+                   d > 0  ? '#fd8d3c':
+                            '#fff5eb';
+                }
+  
+        function styleW(feature) {
+            return {
+                fillColor: getColorW(feature.properties.density),
+                weight: 2,
+                opacity: 10,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 10
+            };
+        }
+ 
+        function westDisplay(){
+            if(geojson ===  undefined ){
+
+             $.getJSON("Southern_Province.geojson",function(rwandaData){
+            geojson = L.geoJson( rwandaData, {
+              style: styleW,
+              onEachFeature: onEachFeatureW
+            }).addTo(map);
+          });
+
+         }
+         else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+
+            $.getJSON("Western_Province.geojson",function(rwandaData){
+            geojson = L.geoJson( rwandaData, {
+              style: styleW,
+              onEachFeature: onEachFeatureW
+            }).addTo(map);
+          });
+         }
+}
+        function onEachFeatureW(feature, layer) {
+            layer.on({
+                mouseover: highlightFeatureW,
+                mouseout: resetHighlightW
+                
+            });
+        }
+        
+
+        function highlightFeatureW(e) {
+             var layer = e.target;
+
+            layer.setStyle({
+                weight: 5,
+                color: '#666',
+                dashArray: '',
+                fillOpacity: 3
+            });
+
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+
+            infoW.update(layer.feature.properties);
+        }
+
+        function resetHighlightW(e) {
+             geojson.resetStyle(e.target);
+            infoW.update();
+        }
+
+
+        //custom control within the map
+         var infoW = L.control({position:'topleft'});
+
+        infoW.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+
+        // method that we will use to update the control based on feature properties passed
+        infoW.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups in Western Province</h4>' +  (props ?
+                '<b>' + props.Name + ' District</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a District');
+        };
+
+        
+
+        //legend
+        var legendW = L.control({position: 'bottomright'});
+
+        legendW.onAdd = function (map) {
+
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 201, 401, 601],
+                labels = [];
+
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorW(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+
+            return div;
+        };
+
+//Eastern Province
+        function getColorE(d) {
+            return d > 901 ? '#a63603':
+                   d > 601 ? '#d94801':
+                   d > 301  ? '#f16913': 
+                   d > 0  ? '#fd8d3c':
+                            '#fff5eb';
+                }
+  
+        function styleE(feature) {
+            return {
+                fillColor: getColorE(feature.properties.density),
+                weight: 2,
+                opacity: 10,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 10
+            };
+        }
+ 
+        function eastDisplay(){
+            if(geojson ===  undefined ){
+
+             $.getJSON("Eastern_Province.geojson",function(rwandaData){
+            geojson = L.geoJson( rwandaData, {
+              style: styleE,
+              onEachFeature: onEachFeatureE
+            }).addTo(map);
+          });
+
+         }
+         else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+
+            $.getJSON("Eastern_Province.geojson",function(rwandaData){
+            geojson = L.geoJson( rwandaData, {
+              style: styleE,
+              onEachFeature: onEachFeatureE
+            }).addTo(map);
+          });
+         }
+}
+        function onEachFeatureE(feature, layer) {
+            layer.on({
+                mouseover: highlightFeatureE,
+                mouseout: resetHighlightE
+                
+            });
+        }
+        
+
+        function highlightFeatureE(e) {
+             var layer = e.target;
+
+            layer.setStyle({
+                weight: 5,
+                color: '#666',
+                dashArray: '',
+                fillOpacity: 3
+            });
+
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+
+            infoE.update(layer.feature.properties);
+        }
+
+        function resetHighlightE(e) {
+             geojson.resetStyle(e.target);
+            infoE.update();
+        }
+
+
+        //custom control within the map
+         var infoE = L.control({position:'topleft'});
+
+        infoE.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+
+        // method that we will use to update the control based on feature properties passed
+        infoE.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups in Eastern Province</h4>' +  (props ?
+                '<b>' + props.Name + ' District</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a District');
+        };
+
+        
+
+        //legend
+        var legendE = L.control({position: 'bottomright'});
+
+        legendE.onAdd = function (map) {
+
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 201, 401, 601],
+                labels = [];
+
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorE(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+
+            return div;
+        };
+
+//sectors for each district
+ //Bugesera
+ function getColorB(d) {
+            return d > 121 ? '#3f007d':
+                   d > 101  ? '#54278f':
+                   d > 81  ? '#6a51a3':
+                   d > 61  ? '#807dba': 
+                   d > 41 ? '#9e9ac8': 
+                   d > 21  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleB(feature) { return {fillColor: getColorB(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function bugeseraDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Bugesera.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleB,onEachFeature: onEachFeatureB}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Bugesera.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleB, onEachFeature: onEachFeatureB}).addTo(map); });
+         }
+}
+function onEachFeatureB(feature, layer) {
+            layer.on({ mouseover: highlightFeatureB, mouseout: resetHighlightB });
+        }
+function highlightFeatureB(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoB.update(layer.feature.properties);
+        }
+function resetHighlightB(e) {
+             geojson.resetStyle(e.target);
+            infoB.update();
+        }
+
+//custom control within the map
+var infoB = L.control({position:'topleft'});
+infoB.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoB.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendB = L.control({position: 'bottomright'});
+        legendB.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 21, 41, 61, 81, 101, 121],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorB(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+
+//Gatsibo
+ function getColorG(d) {
+            return d > 121 ? '#3f007d':
+                   d > 101  ? '#54278f':
+                   d > 81  ? '#6a51a3':
+                   d > 61  ? '#807dba': 
+                   d > 41 ? '#9e9ac8': 
+                   d > 21  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleG(feature) { return {fillColor: getColorG(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function gatsiboDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Gatsibo.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleG,onEachFeature: onEachFeatureG}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Gatsibo.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleG, onEachFeature: onEachFeatureG}).addTo(map); });
+         }
+}
+function onEachFeatureG(feature, layer) {
+            layer.on({ mouseover: highlightFeatureG, mouseout: resetHighlightG });
+        }
+function highlightFeatureG(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoG.update(layer.feature.properties);
+        }
+function resetHighlightG(e) {
+             geojson.resetStyle(e.target);
+            infoG.update();
+        }
+
+//custom control within the map
+var infoG = L.control({position:'topleft'});
+infoG.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoG.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendG = L.control({position: 'bottomright'});
+        legendG.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 21, 41, 61, 81, 101, 121],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorG(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//Kayonza
+function getColorKA(d) {
+            return d > 61 ? '#3f007d':
+                   d > 51  ? '#54278f':
+                   d > 41  ? '#6a51a3':
+                   d > 31  ? '#807dba': 
+                   d > 21 ? '#9e9ac8': 
+                   d > 11  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleKA(feature) { return {fillColor: getColorKA(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function kayonzaDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Kayonza.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleKA,onEachFeature: onEachFeatureKA}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Kayonza.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleKA, onEachFeature: onEachFeatureKA}).addTo(map); });
+         }
+}
+function onEachFeatureKA(feature, layer) {
+            layer.on({ mouseover: highlightFeatureKA, mouseout: resetHighlightKA });
+        }
+function highlightFeatureKA(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoKA.update(layer.feature.properties);
+        }
+function resetHighlightKA(e) {
+             geojson.resetStyle(e.target);
+            infoKA.update();
+        }
+
+//custom control within the map
+var infoKA = L.control({position:'topleft'});
+infoKA.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoKA.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendKA = L.control({position: 'bottomright'});
+        legendKA.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 11, 21, 31, 41, 51, 61],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorKA(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//KIREHE
+function getColorKI(d) {
+            return d > 61 ? '#3f007d':
+                   d > 51  ? '#54278f':
+                   d > 41  ? '#6a51a3':
+                   d > 31  ? '#807dba': 
+                   d > 21 ? '#9e9ac8': 
+                   d > 11  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleKI(feature) { return {fillColor: getColorKI(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function kireheDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Kirehe.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleKI,onEachFeature: onEachFeatureKI}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Kirehe.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleKI, onEachFeature: onEachFeatureKI}).addTo(map); });
+         }
+}
+function onEachFeatureKI(feature, layer) {
+            layer.on({ mouseover: highlightFeatureKI, mouseout: resetHighlightKI });
+        }
+function highlightFeatureKI(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoKI.update(layer.feature.properties);
+        }
+function resetHighlightKI(e) {
+             geojson.resetStyle(e.target);
+            infoKI.update();
+        }
+
+//custom control within the map
+var infoKI = L.control({position:'topleft'});
+infoKI.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoKI.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendKI = L.control({position: 'bottomright'});
+        legendKI.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 11, 21, 31, 41, 51, 61],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorKI(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//Ngoma
+function getColorNG(d) {
+            return d > 61 ? '#3f007d':
+                   d > 51  ? '#54278f':
+                   d > 41  ? '#6a51a3':
+                   d > 31  ? '#807dba': 
+                   d > 21 ? '#9e9ac8': 
+                   d > 11  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleNG(feature) { return {fillColor: getColorNG(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function ngomaDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Ngoma.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNG,onEachFeature: onEachFeatureNG}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Ngoma.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNG, onEachFeature: onEachFeatureNG}).addTo(map); });
+         }
+}
+function onEachFeatureNG(feature, layer) {
+            layer.on({ mouseover: highlightFeatureNG, mouseout: resetHighlightNG });
+        }
+function highlightFeatureNG(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoNG.update(layer.feature.properties);
+        }
+function resetHighlightNG(e) {
+             geojson.resetStyle(e.target);
+            infoNG.update();
+        }
+
+//custom control within the map
+var infoNG = L.control({position:'topleft'});
+infoNG.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoNG.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendNG = L.control({position: 'bottomright'});
+        legendNG.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 11, 21, 31, 41, 51, 61],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorNG(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//NYAGATARE
+function getColorNYG(d) {
+            return d > 61 ? '#3f007d':
+                   d > 51  ? '#54278f':
+                   d > 41  ? '#6a51a3':
+                   d > 31  ? '#807dba': 
+                   d > 21 ? '#9e9ac8': 
+                   d > 11  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleNYG(feature) { return {fillColor: getColorNYG(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function nyagatareDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Nyagatare.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNYG,onEachFeature: onEachFeatureNYG}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Nyagatare.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNYG, onEachFeature: onEachFeatureNYG}).addTo(map); });
+         }
+}
+function onEachFeatureNYG(feature, layer) {
+            layer.on({ mouseover: highlightFeatureNYG, mouseout: resetHighlightNYG });
+        }
+function highlightFeatureNYG(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoNYG.update(layer.feature.properties);
+        }
+function resetHighlightNYG(e) {
+             geojson.resetStyle(e.target);
+            infoNYG.update();
+        }
+
+//custom control within the map
+var infoNYG = L.control({position:'topleft'});
+infoNYG.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoNYG.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendNYG = L.control({position: 'bottomright'});
+        legendNYG.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 11, 21, 31, 41, 51, 61],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorNYG(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//RWAMAGANA
+function getColorRW(d) {
+            return d > 61 ? '#3f007d':
+                   d > 51  ? '#54278f':
+                   d > 41  ? '#6a51a3':
+                   d > 31  ? '#807dba': 
+                   d > 21 ? '#9e9ac8': 
+                   d > 11  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleRW(feature) { return {fillColor: getColorRW(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function rwamaganaDisplay(){
+           if(geojson === undefined){
+            $.getJSON("districts/Rwamagana.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleRW,onEachFeature: onEachFeatureRW}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Rwamagana.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleRW, onEachFeature: onEachFeatureRW}).addTo(map); });
+         }
+}
+function onEachFeatureRW(feature, layer) {
+            layer.on({ mouseover: highlightFeatureRW, mouseout: resetHighlightRW });
+        }
+function highlightFeatureRW(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoRW.update(layer.feature.properties);
+        }
+function resetHighlightRW(e) {
+             geojson.resetStyle(e.target);
+            infoRW.update();
+        }
+
+//custom control within the map
+var infoRW = L.control({position:'topleft'});
+infoRW.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoRW.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendRW = L.control({position: 'bottomright'});
+        legendRW.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 11, 21, 31, 41, 51, 61],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorRW(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//GASABO
+function getColorGA(d) {
+            return d > 61 ? '#3f007d':
+                   d > 51  ? '#54278f':
+                   d > 41  ? '#6a51a3':
+                   d > 31  ? '#807dba': 
+                   d > 21 ? '#9e9ac8': 
+                   d > 11  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleGA(feature) { return {fillColor: getColorGA(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function gasaboDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Gasabo.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleGA,onEachFeature: onEachFeatureGA}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Gasabo.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleGA, onEachFeature: onEachFeatureGA}).addTo(map); });
+         }
+}
+function onEachFeatureGA(feature, layer) {
+            layer.on({ mouseover: highlightFeatureGA, mouseout: resetHighlightGA });
+        }
+function highlightFeatureGA(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoGA.update(layer.feature.properties);
+        }
+function resetHighlightGA(e) {
+             geojson.resetStyle(e.target);
+            infoGA.update();
+        }
+
+//custom control within the map
+var infoGA = L.control({position:'topleft'});
+infoGA.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoGA.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendGA = L.control({position: 'bottomright'});
+        legendGA.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 11, 21, 31, 41, 51, 61],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorGA(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//KICUKIRO
+function getColorKC(d) {
+            return d > 61 ? '#3f007d':
+                   d > 51  ? '#54278f':
+                   d > 41  ? '#6a51a3':
+                   d > 31  ? '#807dba': 
+                   d > 21 ? '#9e9ac8': 
+                   d > 11  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleKC(feature) { return {fillColor: getColorKC(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function kicukiroDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Kicukiro.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleKC,onEachFeature: onEachFeatureKC}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Kicukiro.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleKC, onEachFeature: onEachFeatureKC}).addTo(map); });
+         }
+}
+function onEachFeatureKC(feature, layer) {
+            layer.on({ mouseover: highlightFeatureKC, mouseout: resetHighlightKC });
+        }
+function highlightFeatureKC(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoKC.update(layer.feature.properties);
+        }
+function resetHighlightKC(e) {
+             geojson.resetStyle(e.target);
+            infoKC.update();
+        }
+
+//custom control within the map
+var infoKC = L.control({position:'topleft'});
+infoKC.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoKC.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendKC = L.control({position: 'bottomright'});
+        legendKC.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 11, 21, 31, 41, 51, 61],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorKC(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//NYARUGENGE
+function getColorNRG(d) {
+            return d > 26 ? '#3f007d':
+                   d > 21  ? '#54278f':
+                   d > 16  ? '#6a51a3':
+                   d > 11  ? '#807dba': 
+                   d > 6 ? '#9e9ac8': 
+                   d > 0  ? '#bcbddc': 
+                            '#dadaeb'; 
+                      }
+        function styleNRG(feature) { return {fillColor: getColorNRG(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function nyarugengeDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Nyarugenge.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNRG,onEachFeature: onEachFeatureNRG}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Nyarugenge.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNRG, onEachFeature: onEachFeatureNRG}).addTo(map); });
+         }
+}
+function onEachFeatureNRG(feature, layer) {
+            layer.on({ mouseover: highlightFeatureNRG, mouseout: resetHighlightNRG });
+        }
+function highlightFeatureNRG(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoNRG.update(layer.feature.properties);
+        }
+function resetHighlightNRG(e) {
+             geojson.resetStyle(e.target);
+            infoNRG.update();
+        }
+
+//custom control within the map
+var infoNRG = L.control({position:'topleft'});
+infoNRG.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoNRG.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendNRG = L.control({position: 'bottomright'});
+        legendNRG.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 6, 11, 16, 21, 26],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorNRG(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//BURERA
+function getColorBR(d) {
+            return d > 61 ? '#3f007d':
+                   d > 51  ? '#54278f':
+                   d > 41  ? '#6a51a3':
+                   d > 31  ? '#807dba': 
+                   d > 21 ? '#9e9ac8': 
+                   d > 11  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleBR(feature) { return {fillColor: getColorBR(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function bureraDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Burera.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleBR,onEachFeature: onEachFeatureBR}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Burera.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleBR, onEachFeature: onEachFeatureBR}).addTo(map); });
+         }
+}
+function onEachFeatureBR(feature, layer) {
+            layer.on({ mouseover: highlightFeatureBR, mouseout: resetHighlightBR });
+        }
+function highlightFeatureBR(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoBR.update(layer.feature.properties);
+        }
+function resetHighlightBR(e) {
+             geojson.resetStyle(e.target);
+            infoBR.update();
+        }
+
+//custom control within the map
+var infoBR = L.control({position:'topleft'});
+infoBR.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoBR.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendBR = L.control({position: 'bottomright'});
+        legendBR.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 11, 21, 31, 41, 51, 61],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorBR(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//GAKENKE
+function getColorGK(d) {
+            return d > 61 ? '#3f007d':
+                   d > 51  ? '#54278f':
+                   d > 41  ? '#6a51a3':
+                   d > 31  ? '#807dba': 
+                   d > 21 ? '#9e9ac8': 
+                   d > 11  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleGK(feature) { return {fillColor: getColorGK(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function gakenkeDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Gakenke.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleGK,onEachFeature: onEachFeatureGK}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Gakenke.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleGK, onEachFeature: onEachFeatureGK}).addTo(map); });
+         }
+}
+function onEachFeatureGK(feature, layer) {
+            layer.on({ mouseover: highlightFeatureGK, mouseout: resetHighlightGK });
+        }
+function highlightFeatureGK(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoGK.update(layer.feature.properties);
+        }
+function resetHighlightGK(e) {
+             geojson.resetStyle(e.target);
+            infoGK.update();
+        }
+
+//custom control within the map
+var infoGK = L.control({position:'topleft'});
+infoGK.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoGK.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendGK = L.control({position: 'bottomright'});
+        legendGK.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 11, 21, 31, 41, 51, 61],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorGK(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//GICUMBI
+function getColorGC(d) {
+            return d > 121 ? '#3f007d':
+                   d > 101  ? '#54278f':
+                   d > 81  ? '#6a51a3':
+                   d > 61  ? '#807dba': 
+                   d > 41 ? '#9e9ac8': 
+                   d > 21  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleGC(feature) { return {fillColor: getColorGC(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function gicumbiDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Gicumbi.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleGC,onEachFeature: onEachFeatureGC}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Gicumbi.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleGC, onEachFeature: onEachFeatureGC}).addTo(map); });
+         }
+}
+function onEachFeatureGC(feature, layer) {
+            layer.on({ mouseover: highlightFeatureGC, mouseout: resetHighlightGC });
+        }
+function highlightFeatureGC(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoGC.update(layer.feature.properties);
+        }
+function resetHighlightGC(e) {
+             geojson.resetStyle(e.target);
+            infoGC.update();
+        }
+
+//custom control within the map
+var infoGC = L.control({position:'topleft'});
+infoGC.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoGC.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendGC = L.control({position: 'bottomright'});
+        legendGC.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 21, 41, 61, 81, 101, 121],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorGC(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//MUSANZE
+function getColorMS(d) {
+            return d > 121 ? '#3f007d':
+                   d > 101  ? '#54278f':
+                   d > 81  ? '#6a51a3':
+                   d > 61  ? '#807dba': 
+                   d > 41 ? '#9e9ac8': 
+                   d > 21  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleMS(feature) { return {fillColor: getColorMS(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function musanzeDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Musanze.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleMS,onEachFeature: onEachFeatureMS}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Musanze.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleMS, onEachFeature: onEachFeatureMS}).addTo(map); });
+         }
+}
+function onEachFeatureMS(feature, layer) {
+            layer.on({ mouseover: highlightFeatureMS, mouseout: resetHighlightMS });
+        }
+function highlightFeatureMS(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoMS.update(layer.feature.properties);
+        }
+function resetHighlightMS(e) {
+             geojson.resetStyle(e.target);
+            infoMS.update();
+        }
+
+//custom control within the map
+var infoMS = L.control({position:'topleft'});
+infoMS.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoMS.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendMS = L.control({position: 'bottomright'});
+        legendMS.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 21, 41, 61, 81, 101, 121],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorMS(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//RULINDO
+function getColorRL(d) {
+            return d > 61 ? '#3f007d':
+                   d > 51  ? '#54278f':
+                   d > 41  ? '#6a51a3':
+                   d > 31  ? '#807dba': 
+                   d > 21 ? '#9e9ac8': 
+                   d > 11  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleRL(feature) { return {fillColor: getColorRL(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function rulindoDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Rulindo.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleRL,onEachFeature: onEachFeatureRL}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Rulindo.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleRL, onEachFeature: onEachFeatureRL}).addTo(map); });
+         }
+}
+function onEachFeatureRL(feature, layer) {
+            layer.on({ mouseover: highlightFeatureRL, mouseout: resetHighlightRL });
+        }
+function highlightFeatureRL(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoRL.update(layer.feature.properties);
+        }
+function resetHighlightRL(e) {
+             geojson.resetStyle(e.target);
+            infoRL.update();
+        }
+
+//custom control within the map
+var infoRL = L.control({position:'topleft'});
+infoG.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoRL.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendRL = L.control({position: 'bottomright'});
+        legendRL.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 11, 21, 31, 41, 51, 61],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorRL(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//KARONGI
+function getColorKG(d) {
+            return d > 151 ? '#3f007d':
+                   d > 101  ? '#54278f':
+                   d > 51  ? '#6a51a3':
+                   d > 0  ? '#807dba': 
+                            '#efedf5';
+                }
+        function styleKG(feature) { return {fillColor: getColorKG(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function karongiDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Karongi.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleKG,onEachFeature: onEachFeatureKG}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Karongi.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleKG, onEachFeature: onEachFeatureKG}).addTo(map); });
+         }
+}
+function onEachFeatureKG(feature, layer) {
+            layer.on({ mouseover: highlightFeatureKG, mouseout: resetHighlightKG });
+        }
+function highlightFeatureKG(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoKG.update(layer.feature.properties);
+        }
+function resetHighlightKG(e) {
+             geojson.resetStyle(e.target);
+            infoKG.update();
+        }
+
+//custom control within the map
+var infoKG = L.control({position:'topleft'});
+infoKG.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoKG.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendKG = L.control({position: 'bottomright'});
+        legendKG.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 51, 101, 151],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorKG(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//NGORORERO
+function getColorNGR(d) {
+            return d > 121 ? '#3f007d':
+                   d > 101  ? '#54278f':
+                   d > 81  ? '#6a51a3':
+                   d > 61  ? '#807dba': 
+                   d > 41 ? '#9e9ac8': 
+                   d > 21  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleNGR(feature) { return {fillColor: getColorNGR(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function ngororeroDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Ngororero.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNGR,onEachFeature: onEachFeatureNGR}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Ngororero.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNGR, onEachFeature: onEachFeatureNGR}).addTo(map); });
+         }
+}
+function onEachFeatureNGR(feature, layer) {
+            layer.on({ mouseover: highlightFeatureNGR, mouseout: resetHighlightNGR });
+        }
+function highlightFeatureNGR(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoNGR.update(layer.feature.properties);
+        }
+function resetHighlightNGR(e) {
+             geojson.resetStyle(e.target);
+            infoNGR.update();
+        }
+
+//custom control within the map
+var infoNGR = L.control({position:'topleft'});
+infoNGR.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoNGR.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendNGR = L.control({position: 'bottomright'});
+        legendNGR.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 21, 41, 61, 81, 101, 121],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorNGR(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//NYABIHU
+function getColorNY(d) {
+            return d > 61 ? '#3f007d':
+                   d > 51  ? '#54278f':
+                   d > 41  ? '#6a51a3':
+                   d > 31  ? '#807dba': 
+                   d > 21 ? '#9e9ac8': 
+                   d > 11  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleNY(feature) { return {fillColor: getColorNY(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function nyabihuDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Nyabihu.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNY,onEachFeature: onEachFeatureNY}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Nyabihu.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNY, onEachFeature: onEachFeatureNY}).addTo(map); });
+         }
+}
+function onEachFeatureNY(feature, layer) {
+            layer.on({ mouseover: highlightFeatureNY, mouseout: resetHighlightNY });
+        }
+function highlightFeatureNY(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoNY.update(layer.feature.properties);
+        }
+function resetHighlightNY(e) {
+             geojson.resetStyle(e.target);
+            infoNY.update();
+        }
+
+//custom control within the map
+var infoNY = L.control({position:'topleft'});
+infoNY.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoNY.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendNY = L.control({position: 'bottomright'});
+        legendNY.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 11, 21, 31, 41, 51, 61],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorNY(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//NYAMASHEKE
+function getColorNYM(d) {
+            return d > 61 ? '#3f007d':
+                   d > 51  ? '#54278f':
+                   d > 41  ? '#6a51a3':
+                   d > 31  ? '#807dba': 
+                   d > 21 ? '#9e9ac8': 
+                   d > 11  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleNYM(feature) { return {fillColor: getColorNYM(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function nyamashekeDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Nyamasheke.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNYM,onEachFeature: onEachFeatureNYM}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Nyamasheke.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNYM, onEachFeature: onEachFeatureNYM}).addTo(map); });
+         }
+}
+function onEachFeatureNYM(feature, layer) {
+            layer.on({ mouseover: highlightFeatureNYM, mouseout: resetHighlightNYM });
+        }
+function highlightFeatureNYM(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoNYM.update(layer.feature.properties);
+        }
+function resetHighlightNYM(e) {
+             geojson.resetStyle(e.target);
+            infoNYM.update();
+        }
+
+//custom control within the map
+var infoNYM = L.control({position:'topleft'});
+infoNYM.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoNYM.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendNYM = L.control({position: 'bottomright'});
+        legendNYM.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 11, 21, 31, 41, 51, 61],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorNYM(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//RUBAVU
+function getColorRU(d) {
+            return d > 61 ? '#3f007d':
+                   d > 51  ? '#54278f':
+                   d > 41  ? '#6a51a3':
+                   d > 31  ? '#807dba': 
+                   d > 21 ? '#9e9ac8': 
+                   d > 11  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleRU(feature) { return {fillColor: getColorRU(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function rubavuDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Rubavu.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleRU,onEachFeature: onEachFeatureRU}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Rubavu.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleRU, onEachFeature: onEachFeatureRU}).addTo(map); });
+         }
+}
+function onEachFeatureRU(feature, layer) {
+            layer.on({ mouseover: highlightFeatureRU, mouseout: resetHighlightRU });
+        }
+function highlightFeatureRU(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoRU.update(layer.feature.properties);
+        }
+function resetHighlightRU(e) {
+             geojson.resetStyle(e.target);
+            infoRU.update();
+        }
+
+//custom control within the map
+var infoRU = L.control({position:'topleft'});
+infoRU.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoRU.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendRU = L.control({position: 'bottomright'});
+        legendRU.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 11, 21, 31, 41, 51, 61],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorRU(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//RUSIZI
+function getColorRS(d) {
+            return d > 61 ? '#3f007d':
+                   d > 51  ? '#54278f':
+                   d > 41  ? '#6a51a3':
+                   d > 31  ? '#807dba': 
+                   d > 21 ? '#9e9ac8': 
+                   d > 11  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleRS(feature) { return {fillColor: getColorRS(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function rusiziDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Rusizi.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleRS,onEachFeature: onEachFeatureRS}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Rusizi.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleRS, onEachFeature: onEachFeatureRS}).addTo(map); });
+         }
+}
+function onEachFeatureRS(feature, layer) {
+            layer.on({ mouseover: highlightFeatureRS, mouseout: resetHighlightRS });
+        }
+function highlightFeatureRS(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoRS.update(layer.feature.properties);
+        }
+function resetHighlightRS(e) {
+             geojson.resetStyle(e.target);
+            infoRS.update();
+        }
+
+//custom control within the map
+var infoRS = L.control({position:'topleft'});
+infoRS.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoRS.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendRS = L.control({position: 'bottomright'});
+        legendRS.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 11, 21, 31, 41, 51, 61],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorRS(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//RUTSIRO
+function getColorRT(d) {
+            return d > 61 ? '#3f007d':
+                   d > 51  ? '#54278f':
+                   d > 41  ? '#6a51a3':
+                   d > 31  ? '#807dba': 
+                   d > 21 ? '#9e9ac8': 
+                   d > 11  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleRT(feature) { return {fillColor: getColorRT(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function rutsiroDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Rutsiro.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleRT,onEachFeature: onEachFeatureRT}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Rutsiro.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleRT, onEachFeature: onEachFeatureRT}).addTo(map); });
+         }
+}
+function onEachFeatureRT(feature, layer) {
+            layer.on({ mouseover: highlightFeatureRT, mouseout: resetHighlightRT });
+        }
+function highlightFeatureRT(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoRT.update(layer.feature.properties);
+        }
+function resetHighlightRT(e) {
+             geojson.resetStyle(e.target);
+            infoRT.update();
+        }
+
+//custom control within the map
+var infoRT = L.control({position:'topleft'});
+infoRT.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoRT.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendRT = L.control({position: 'bottomright'});
+        legendRT.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 11, 21, 31, 41, 51, 61],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorRT(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//GISAGARA
+function getColorGS(d) {
+            return d > 181 ? '#3f007d':
+                   d > 151  ? '#54278f':
+                   d > 121  ? '#6a51a3':
+                   d > 91  ? '#807dba': 
+                   d > 61 ? '#9e9ac8': 
+                   d > 31  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleGS(feature) { return {fillColor: getColorGS(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function gisagaraDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Gisagara.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleGS,onEachFeature: onEachFeatureGS}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Gisagara.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleGS, onEachFeature: onEachFeatureGS}).addTo(map); });
+         }
+}
+function onEachFeatureGS(feature, layer) {
+            layer.on({ mouseover: highlightFeatureGS, mouseout: resetHighlightGS });
+        }
+function highlightFeatureGS(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoGS.update(layer.feature.properties);
+        }
+function resetHighlightGS(e) {
+             geojson.resetStyle(e.target);
+            infoGS.update();
+        }
+
+//custom control within the map
+var infoGS = L.control({position:'topleft'});
+infoGS.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoGS.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendGS = L.control({position: 'bottomright'});
+        legendGS.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 31, 61, 91, 121, 151, 181],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorGS(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//HUYE
+function getColorH(d) {
+            return d > 181 ? '#3f007d':
+                   d > 151  ? '#54278f':
+                   d > 121  ? '#6a51a3':
+                   d > 91  ? '#807dba': 
+                   d > 61 ? '#9e9ac8': 
+                   d > 31  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleH(feature) { return {fillColor: getColorH(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function huyeDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Huye.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleH,onEachFeature: onEachFeatureH}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Huye.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleH, onEachFeature: onEachFeatureH}).addTo(map); });
+         }
+}
+function onEachFeatureH(feature, layer) {
+            layer.on({ mouseover: highlightFeatureG, mouseout: resetHighlightG });
+        }
+function highlightFeatureH(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoH.update(layer.feature.properties);
+        }
+function resetHighlightH(e) {
+             geojson.resetStyle(e.target);
+            infoH.update();
+        }
+
+//custom control within the map
+var infoH = L.control({position:'topleft'});
+infoH.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoH.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendH = L.control({position: 'bottomright'});
+        legendH.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 31, 61, 91, 121, 151, 181],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorH(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//KAMONYI
+function getColorKN(d) {
+            return d > 41 ? '#3f007d':
+                   d > 31  ? '#54278f':
+                   d > 21  ? '#6a51a3':
+                   d > 11  ? '#807dba': 
+                   d > 0 ? '#9e9ac8': 
+                            '#efedf5';
+                }
+        function styleKN(feature) { return {fillColor: getColorKN(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function kamonyiDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Kamonyi.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleKN,onEachFeature: onEachFeatureKN}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Kamonyi.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleKN, onEachFeature: onEachFeatureKN}).addTo(map); });
+         }
+}
+function onEachFeatureKN(feature, layer) {
+            layer.on({ mouseover: highlightFeatureKN, mouseout: resetHighlightKN });
+        }
+function highlightFeatureKN(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoKN.update(layer.feature.properties);
+        }
+function resetHighlightKN(e) {
+             geojson.resetStyle(e.target);
+            infoKN.update();
+        }
+
+//custom control within the map
+var infoKN = L.control({position:'topleft'});
+infoKN.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoKN.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendKN = L.control({position: 'bottomright'});
+        legendKN.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 11, 21, 31, 41],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorKN(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//MUHANGA
+function getColorMH(d) {
+            return d > 61 ? '#3f007d':
+                   d > 51  ? '#54278f':
+                   d > 41  ? '#6a51a3':
+                   d > 31  ? '#807dba': 
+                   d > 21 ? '#9e9ac8': 
+                   d > 11  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleMH(feature) { return {fillColor: getColorMH(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function muhangaDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Muhanga.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleMH,onEachFeature: onEachFeatureMH}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Muhanga.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleMH, onEachFeature: onEachFeatureMH}).addTo(map); });
+         }
+}
+function onEachFeatureMH(feature, layer) {
+            layer.on({ mouseover: highlightFeatureMH, mouseout: resetHighlightMH });
+        }
+function highlightFeatureMH(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoMH.update(layer.feature.properties);
+        }
+function resetHighlightMH(e) {
+             geojson.resetStyle(e.target);
+            infoMH.update();
+        }
+
+//custom control within the map
+var infoMH = L.control({position:'topleft'});
+infoMH.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoMH.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendMH = L.control({position: 'bottomright'});
+        legendMH.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 11, 21, 31, 41, 51, 61],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorMH(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+        //NYAMAGABE
+        function getColorNYGB(d) {
+            return d > 301 ? '#3f007d':
+                   d > 251  ? '#54278f':
+                   d > 201  ? '#6a51a3':
+                   d > 151  ? '#807dba': 
+                   d > 101 ? '#9e9ac8': 
+                   d > 51  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleNYGB(feature) { return {fillColor: getColorNYGB(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function nyamagabeDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Nyamagabe.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNYGB,onEachFeature: onEachFeatureNYGB}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Nyamagabe.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNYGB, onEachFeature: onEachFeatureNYGB}).addTo(map); });
+         }
+}
+function onEachFeatureNYGB(feature, layer) {
+            layer.on({ mouseover: highlightFeatureNYGB, mouseout: resetHighlightNYGB });
+        }
+function highlightFeatureNYGB(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoNYGB.update(layer.feature.properties);
+        }
+function resetHighlightNYGB(e) {
+             geojson.resetStyle(e.target);
+            infoNYGB.update();
+        }
+
+//custom control within the map
+var infoNYGB = L.control({position:'topleft'});
+infoNYGB.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoNYGB.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendNYGB = L.control({position: 'bottomright'});
+        legendNYGB.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 51, 101, 151, 201, 251, 301],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorNYGB(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//NYANZA
+function getColorNZ(d) {
+            return d > 121 ? '#3f007d':
+                   d > 101  ? '#54278f':
+                   d > 81  ? '#6a51a3':
+                   d > 61  ? '#807dba': 
+                   d > 41 ? '#9e9ac8': 
+                   d > 21  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleNZ(feature) { return {fillColor: getColorNZ(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function nyanzaDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Nyanza.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNZ,onEachFeature: onEachFeatureNZ}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Nyanza.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNZ, onEachFeature: onEachFeatureNZ}).addTo(map); });
+         }
+}
+function onEachFeatureNZ(feature, layer) {
+            layer.on({ mouseover: highlightFeatureNZ, mouseout: resetHighlightNZ });
+        }
+function highlightFeatureNZ(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoNZ.update(layer.feature.properties);
+        }
+function resetHighlightNZ(e) {
+             geojson.resetStyle(e.target);
+            infoNZ.update();
+        }
+
+//custom control within the map
+var infoNZ = L.control({position:'topleft'});
+infoNZ.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoNZ.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendNZ = L.control({position: 'bottomright'});
+        legendNZ.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 21, 41, 61, 81, 101, 121],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorNZ(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//NYARUGURU
+function getColorNR(d) {
+            return d > 121 ? '#3f007d':
+                   d > 101  ? '#54278f':
+                   d > 81  ? '#6a51a3':
+                   d > 61  ? '#807dba': 
+                   d > 41 ? '#9e9ac8': 
+                   d > 21  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleNR(feature) { return {fillColor: getColorNR(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function nyaruguruDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Nyaruguru.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNR,onEachFeature: onEachFeatureNR}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Nyaruguru.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleNR, onEachFeature: onEachFeatureNR}).addTo(map); });
+         }
+}
+function onEachFeatureNR(feature, layer) {
+            layer.on({ mouseover: highlightFeatureNR, mouseout: resetHighlightNR });
+        }
+function highlightFeatureNR(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoNR.update(layer.feature.properties);
+        }
+function resetHighlightNR(e) {
+             geojson.resetStyle(e.target);
+            infoNR.update();
+        }
+
+//custom control within the map
+var infoNR = L.control({position:'topleft'});
+infoNR.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoNR.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendNR = L.control({position: 'bottomright'});
+        legendNR.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 21, 41, 61, 81, 101, 121],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorNR(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+//RUHANGO
+function getColorRH(d) {
+            return d > 121 ? '#3f007d':
+                   d > 101  ? '#54278f':
+                   d > 81  ? '#6a51a3':
+                   d > 61  ? '#807dba': 
+                   d > 41 ? '#9e9ac8': 
+                   d > 21  ? '#bcbddc': 
+                   d > 0  ? '#dadaeb': 
+                            '#efedf5';
+                }
+        function styleRH(feature) { return {fillColor: getColorRH(feature.properties.density),
+                weight: 2,opacity: 10,color: 'white',dashArray: '3',fillOpacity: 10
+            };
+        }
+        
+function ruhangoDisplay(){
+            if(geojson === undefined){
+            $.getJSON("districts/Ruhango.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleRH,onEachFeature: onEachFeatureRH}).addTo(map); });
+            } else{
+            geojson.eachLayer(function (layer) { map.removeLayer(layer);});
+             $.getJSON("districts/Ruhango.geojson",function(rwandaData){geojson = L.geoJson( rwandaData, {
+              style: styleRH, onEachFeature: onEachFeatureRH}).addTo(map); });
+         }
+}
+function onEachFeatureRH(feature, layer) {
+            layer.on({ mouseover: highlightFeatureRH, mouseout: resetHighlightRH });
+        }
+function highlightFeatureRH(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5,color: '#666',dashArray: '',fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            infoRH.update(layer.feature.properties);
+        }
+function resetHighlightRH(e) {
+             geojson.resetStyle(e.target);
+            infoRH.update();
+        }
+
+//custom control within the map
+var infoRH = L.control({position:'topleft'});
+infoRH.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+// method that we will use to update the control based on feature properties passed
+infoRH.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a sector');
+        };
+//legend
+        var legendRH = L.control({position: 'bottomright'});
+        legendRH.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 21, 41, 61, 81, 101, 121],
+                labels = [];
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorRH(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
 //onclick handlers
         
     function handler(){
@@ -777,29 +3093,525 @@ function getColorS(d) {
              map.removeControl(infoD);
                      legendS.addTo(map);
                      infoS.addTo(map); 
-        }else if (document.getElementById('province').value == 'ca'){
-            //window.location.replace();
+        }
+    }
+    function handler1(){
+        if (document.getElementById('province').value == 'ca'){
             kigaliDisplay();
-           map.removeControl(legendN);
-             map.removeControl(infoN);
-                     legendK.addTo(map);
-                     infoK.addTo(map); 
+           map.removeControl(legendN);map.removeControl(legendSN);map.removeControl(legendW);map.removeControl(legendE);
+           map.removeControl(infoN); map.removeControl(infoSN); map.removeControl(infoW); map.removeControl(infoE);         
+            legendK.addTo(map);
+            infoK.addTo(map); 
         }else if (document.getElementById('province').value == 'da'){
-            
             northDisplay();
-           map.removeControl(legendK);
-             map.removeControl(infoK);
-                     legendN.addTo(map);
-                     infoN.addTo(map); 
+           map.removeControl(legendK); map.removeControl(legendSN);map.removeControl(legendW);map.removeControl(legendE);
+           map.removeControl(infoK); map.removeControl(infoSN); map.removeControl(infoW); map.removeControl(infoE); 
+           legendN.addTo(map);
+           infoN.addTo(map); 
         }else if (document.getElementById('province').value == 'ea'){
-            
-            southDisplay();
-           map.removeControl(legendK);
-             map.removeControl(infoK);
+           southDisplay();
+           map.removeControl(legendN);map.removeControl(legendK);map.removeControl(legendW);map.removeControl(legendE);
+           map.removeControl(infoN); map.removeControl(infoK); map.removeControl(infoW); map.removeControl(infoE); 
                      legendSN.addTo(map);
                      infoSN.addTo(map); 
         }
+        else if(document.getElementById('province').value == 'ba'){
+            westDisplay();
+            map.removeControl(legendN);map.removeControl(legendSN); map.removeControl(legendK);map.removeControl(legendE);
+            map.removeControl(infoN); map.removeControl(infoSN); map.removeControl(infoK); map.removeControl(infoE); 
+            legendW.addTo(map);
+                     infoW.addTo(map); 
+        }else if(document.getElementById('province').value == 'aa'){
+            eastDisplay();
+            map.removeControl(legendN);map.removeControl(legendSN);map.removeControl(legendW);map.removeControl(legendK);
+            map.removeControl(infoN); map.removeControl(infoSN); map.removeControl(infoW); map.removeControl(infoK); 
+            legendE.addTo(map);
+                     infoE.addTo(map); 
+        }
 
+    }
+    function handler2(){
+if (document.getElementById('district').value == 'ac'){//gasabo
+    gasaboDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendGA.addTo(map);
+     infoGA.addTo(map); 
+    }else if (document.getElementById('district').value == 'bc'){//kicukiro
+    kicukiroDisplay();
+     map.removeControl(infoGA); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendGA);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendKC.addTo(map);
+     infoKC.addTo(map); 
+    }else if (document.getElementById('district').value == 'cc'){//nyarugenge
+    nyarugengeDisplay();
+     map.removeControl(infoKC); map.removeControl(infoGA); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendGA);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendNRG.addTo(map);
+     infoNRG.addTo(map); 
+    }else if (document.getElementById('district').value == 'dc'){//burera
+    bureraDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoGA); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendGA);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendBR.addTo(map);
+     infoBR.addTo(map); 
+    }else if (document.getElementById('district').value == 'ec'){//gakenke
+    gakenkeDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGA); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGA);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendGK.addTo(map);
+     infoGK.addTo(map); 
+    }else if (document.getElementById('district').value == 'fc'){//gicumbi
+    gicumbiDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGA);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGA);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendGC.addTo(map);
+     infoGC.addTo(map); 
+    }else if (document.getElementById('district').value == 'gc'){//MUSANZE
+    musanzeDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoGA); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendGA);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendMS.addTo(map);
+     infoMS.addTo(map); 
+    }else if (document.getElementById('district').value == 'hc'){//rulindo
+    rulindoDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoGA); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendGA);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendRL.addTo(map);
+     infoRL.addTo(map); 
+    }else if (document.getElementById('district').value == 'ic'){//gisagara
+    gisagaraDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGA); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGA);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendGS.addTo(map);
+     infoGS.addTo(map); 
+    }else if (document.getElementById('district').value == 'jc'){//huye
+    huyeDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoGA); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendGA);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendH.addTo(map);
+     infoH.addTo(map); 
+    }else if (document.getElementById('district').value == 'kc'){//kamonyi
+    kamonyiDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoGA);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendGA);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendKN.addTo(map);
+     infoKN.addTo(map); 
+    }else if (document.getElementById('district').value == 'lc'){//muhanga
+    muhangaDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoGA); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendGA);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendMH.addTo(map);
+     infoMH.addTo(map); 
+    }else if (document.getElementById('district').value == 'mc'){//nyamagabe
+    nyamagabeDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoGA); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendGA);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendNYGB.addTo(map);
+     infoNYGB.addTo(map); 
+    }else if (document.getElementById('district').value == 'nc'){//nyanza
+    nyanzaDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoGA); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendGA);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendNZ.addTo(map);
+     infoNZ.addTo(map); 
+    }else if (document.getElementById('district').value == 'oc'){//nyaruguru
+    nyaruguruDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoGA); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendGA);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendNR.addTo(map);
+     infoNR.addTo(map); 
+    }else if (document.getElementById('district').value == 'pc'){//ruhango
+    ruhangoDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoGA);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendGA);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendRH.addTo(map);
+     infoRH.addTo(map); 
+    }else if (document.getElementById('district').value == 'qc'){//karongi
+    karongiDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoGA); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendGA);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendKG.addTo(map);
+     infoKG.addTo(map); 
+    }else if (document.getElementById('district').value == 'rc'){//ngororero
+    ngororeroDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoGA); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendGA);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendNGR.addTo(map);
+     infoNGR.addTo(map); 
+    }else if (document.getElementById('district').value == 'sc'){//NYABIHU
+    nyabihuDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoGA); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendGA);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendNY.addTo(map);
+     infoNY.addTo(map); 
+    }else if (document.getElementById('district').value == 'tc'){//nyamasheke
+    nyamashekeDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoGA); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendGA);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendNYM.addTo(map);
+     infoNYM.addTo(map); 
+    }else if (document.getElementById('district').value == 'uc'){//rubavu
+    rubavuDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoGA);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendGA);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendRU.addTo(map);
+     infoRU.addTo(map); 
+    }else if (document.getElementById('district').value == 'vc'){//RUSIZI
+    rusiziDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoGA); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendGA);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendRS.addTo(map);
+     infoRS.addTo(map); 
+    }else if (document.getElementById('district').value == 'wc'){//RUTSIRO
+    rutsiroDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoGA); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendGA);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendRT.addTo(map);
+     infoRT.addTo(map); 
+    }else if (document.getElementById('district').value == 'xc'){//bugesera
+    bugeseraDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoGA); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendGA);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendB.addTo(map);
+     infoB.addTo(map); 
+    }else if (document.getElementById('district').value == 'yc'){//gatsibo
+    gatsiboDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoGA); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendGA);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendG.addTo(map);
+     infoG.addTo(map); 
+    }else if (document.getElementById('district').value == 'zc'){//KAYONZA
+    kayonzaDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoGA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendGA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendKA.addTo(map);
+     infoKA.addTo(map); 
+    }else if (document.getElementById('district').value == 'ab'){//kirehe
+    kireheDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoGA); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendGA);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendKI.addTo(map);
+     infoKI.addTo(map); 
+    }else if (document.getElementById('district').value == 'bb'){//ngoma
+    ngomaDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoGA); map.removeControl(infoNYG); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendGA);map.removeControl(legendNYG);map.removeControl(legendRW);
+     legendNG.addTo(map);
+     infoNG.addTo(map); 
+    }else if (document.getElementById('district').value == 'cb'){//nyagatare
+    nyagatareDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoGA); map.removeControl(infoRW);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendGA);map.removeControl(legendRW);
+     legendNYG.addTo(map);
+     infoNYG.addTo(map); 
+    }else if (document.getElementById('district').value == 'dd'){//rwamagana
+    rwamaganaDisplay();
+     map.removeControl(infoKC); map.removeControl(infoNRG); map.removeControl(infoBR); map.removeControl(infoGK); map.removeControl(infoGC);
+     map.removeControl(infoMS); map.removeControl(infoRL); map.removeControl(infoGS); map.removeControl(infoH); map.removeControl(infoKN);
+     map.removeControl(infoMH); map.removeControl(infoNYGB); map.removeControl(infoNZ); map.removeControl(infoNR); map.removeControl(infoRH);
+     map.removeControl(infoKG); map.removeControl(infoNGR); map.removeControl(infoNY); map.removeControl(infoNYM); map.removeControl(infoRU);
+     map.removeControl(infoRS); map.removeControl(infoRT); map.removeControl(infoB); map.removeControl(infoG); map.removeControl(infoKA);
+     map.removeControl(infoKI); map.removeControl(infoNG); map.removeControl(infoNYG); map.removeControl(infoGA);        
+     map.removeControl(legendKC);map.removeControl(legendNRG);map.removeControl(legendBR);map.removeControl(legendGK);map.removeControl(legendGC);
+     map.removeControl(legendMS);map.removeControl(legendRL);map.removeControl(legendGS);map.removeControl(legendH);map.removeControl(legendKN);
+     map.removeControl(legendMH);map.removeControl(legendNYGB);map.removeControl(legendNZ);map.removeControl(legendNR);map.removeControl(legendRH);
+     map.removeControl(legendKG);map.removeControl(legendNGR);map.removeControl(legendNY);map.removeControl(legendNYM);map.removeControl(legendRU);
+     map.removeControl(legendRS);map.removeControl(legendRT);map.removeControl(legendB);map.removeControl(legendG);map.removeControl(legendKA);
+     map.removeControl(legendKI);map.removeControl(legendNG);map.removeControl(legendNYG);map.removeControl(legendGA);
+     legendRW.addTo(map);
+     infoRW.addTo(map); 
+    }
     }
     </script>
 </body>
