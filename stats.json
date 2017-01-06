@@ -1,181 +1,181 @@
 {
   "Districts": [
     {
-      "Districts": "Gisagara",
+      "District": "Gisagara",
       "Membership": "31545",
       "Female": "25702",
       "Male": "5843"
     },
     {
-      "Districts": "Huye",
+      "District": "Huye",
       "Membership": "33461",
       "Female": "26064",
       "Male": "7397"
     },
     {
-      "Districts": "Kamonyi",
+      "District": "Kamonyi",
       "Membership": "4593",
       "Female": "3471",
       "Male": "1122"
     },
     {
-      "Districts": "Muhanga",
+      "District": "Muhanga",
       "Membership": "8943",
       "Female": "6425",
       "Male": "2518"
     },
     {
-      "Districts": "Nyamagabe",
+      "District": "Nyamagabe",
       "Membership": "45458",
       "Female": "33524",
       "Male": "11934"
     },
     {
-      "Districts": "Nyanza",
+      "District": "Nyanza",
       "Membership": "23664",
       "Female": "18066",
       "Male": "5598"
     },
     {
-      "Districts": "Nyaruguru",
+      "District": "Nyaruguru",
       "Membership": "27819",
       "Female": "21477",
       "Male": "6342"
     },
     {
-      "Districts": "Ruhango",
+      "District": "Ruhango",
       "Membership": "21691",
       "Female": "16949",
       "Male": "4742"
     },
     {
-      "Districts": "Burera",
+      "District": "Burera",
       "Membership": "12049",
       "Female": "8817",
       "Male": "3232"
     },
     {
-      "Districts": "Gakenke",
+      "District": "Gakenke",
       "Membership": "11212",
       "Female": "8237",
       "Male": "2975"
     },
     {
-      "Districts": "Gicumbi",
+      "District": "Gicumbi",
       "Membership": "23328",
       "Female": "16901",
       "Male": "6427"
     },
     {
-      "Districts": "Musanze",
+      "District": "Musanze",
       "Membership": "18358",
       "Female": "13699",
       "Male": "4659"
     },
     {
-      "Districts": "Rulindo",
+      "District": "Rulindo",
       "Membership": "15514",
       "Female": "12535",
       "Male": "2979"
     },
     {
-      "Districts": "Gasabo",
+      "District": "Gasabo",
       "Membership": "9438",
       "Female": "7495",
       "Male": "1943"
     },
     {
-      "Districts": "Kicukiro",
+      "District": "Kicukiro",
       "Membership": "8099",
       "Female": "6191",
       "Male": "1908"
     },
     {
-      "Districts": "Nyarugenge",
+      "District": "Nyarugenge",
       "Membership": "1148",
       "Female": "798",
       "Male": "350"
     },
     {
-      "Districts": "Karongi",
+      "District": "Karongi",
       "Membership": "23779",
       "Female": "17033",
       "Male": "6761"
     },
     {
-      "Districts": "Ngororero",
+      "District": "Ngororero",
       "Membership": "17021",
       "Female": "12525",
       "Male": "4496"
     },
     {
-      "Districts": "Nyabihu",
+      "District": "Nyabihu",
       "Membership": "9395",
       "Female": "7681",
       "Male": "1714"
     },
     {
-      "Districts": "Nyamasheke",
+      "District": "Nyamasheke",
       "Membership": "10585",
       "Female": "6692",
       "Male": "3893"
     },
     {
-      "Districts": "Rubavu",
+      "District": "Rubavu",
       "Membership": "6840",
       "Female": "4909",
       "Male": "1931"
     },
     {
-      "Districts": "Rusizi",
+      "District": "Rusizi",
       "Membership": "8722",
       "Female": "6147",
       "Male": "2575"
     },
     {
-      "Districts": "Rutsiro",
+      "District": "Rutsiro",
       "Membership": "5391",
       "Female": "3713",
       "Male": "1678"
     },
     {
-      "Districts": "Bugesera",
+      "District": "Bugesera",
       "Membership": "100319",
       "Female": "71932",
       "Male": "28387"
     },
     {
-      "Districts": "Gatsibo",
+      "District": "Gatsibo",
       "Membership": "22420",
       "Female": "15734",
       "Male": "6686"
     },
     {
-      "Districts": "Kayonza",
+      "District": "Kayonza",
       "Membership": "11327",
       "Female": "8318",
       "Male": "3009"
     },
     {
-      "Districts": "Kirehe",
+      "District": "Kirehe",
       "Membership": "12730",
       "Female": "8620",
       "Male": "4110"
     },
     {
-      "Districts": "Ngoma",
+      "District": "Ngoma",
       "Membership": "11515",
       "Female": "7571",
       "Male": "3944"
     },
     {
-      "Districts": "Nyagatare",
+      "District": "Nyagatare",
       "Membership": "14750",
       "Female": "11406",
       "Male": "3344"
     },
     {
-      "Districts": "Rwamagana",
+      "District": "Rwamagana",
       "Membership": "9958",
       "Female": "8335",
       "Male": "1623"
