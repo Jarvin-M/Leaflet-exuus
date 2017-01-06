@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet map</title>
+	<meta charset="utf-8" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="js/jquery-3.1.1.min.js" ></script>
+    <style>
+    #map{ height: 700px; width:1200px; display: block; margin: auto; position: relative;}
+    .info {padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;}
+    .info h4 {margin: 0 0 10px;color: #777; font-size: 14px; font-weight: bold;}
+    .legend {line-height: 18px;color: #555;}
+    .legend i {width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.7;}
+    .form-control{border-radius: 0; border:none; border-right: 2px solid grey;  width: 180px; height: 25px; font-weight: bold; font-size: 12px; padding-right: 0px; background: #36464f; border-radius: 2px; color: white;}
+    #sel{background: rgba(0,0,0,0); padding: 0px 0px 0px 0px; position: absolute; top: 15px; right:100px; z-index:1000;}
+    .nopadding{ padding:0px; margin: 0px;}
+    </style>
+</head>
+<body>
+<div id="map">
+	<div id="sel">
+	  <div class="rows">
+	  <div class="col-md-4 nopadding" >
+   <select id="geo" onchange="handler();" autocomplete = "off" class="form-control" >
+   <option value="">National </option>
+       <option value="a"> Provinces</option>
+       <option value="b">Districts</option>
+       <option value ="c">Sectors</option>
+   </select>
+   		</div>
+   		<div class="col-md-4 nopadding">
+    <select id="pro" onchange="handler1();" autocomplete = "off" class="form-control">
+   <option value="">Provinces </option>
+       <option value="aa"> Eastern Province</option>
+       <option value="ba">Western Province</option>
+       <option value ="ca">Kigali City</option>
+       <option value ="da">Northern Province</option>
+       <option value ="ea">Southern Province</option>
+   </select>
+   </div>
+   <div class="col-md-4 nopadding">
+    <select id="ge" onchange="handler2();" class="form-control" >
+   <option value="">Districts </option>
+       <option value="ac"> Gasabo District</option>
+       <option value="bc"> Kicukiro District</option>
+       <option value ="cc">Nyarugenge District</option>
+       <option value ="dc">Burera District</option>
+       <option value ="ec">Gakenke District</option>
+       <option value ="fc">Gicumbi District</option>
+       <option value ="gc">Musanze District</option>
+       <option value ="hc">Rulindo District</option>
+       <option value ="ic">Gisagara District</option>
+       <option value ="jc">Huye District</option>
+       <option value ="kc">Kamonyi District</option>
+       <option value ="lc">Muhanga District</option>
+       <option value ="mc">Nyamagabe District</option>
+       <option value ="nc">Nyanza District</option>
+       <option value ="oc">Nyaruguru District</option>
+       <option value ="pc">Ruhango District</option>
+       <option value ="qc">Karongi District</option>
+       <option value ="rc">Ngororero District</option>
+       <option value ="sc">Nyabihu District</option>
+       <option value ="tc">Nyamasheke District</option>
+       <option value ="uc">Rubavu District</option>
+       <option value ="vc">Rusizi District</option>
+       <option value ="wc">Rutsiro District</option>
+       <option value ="xc">Bugesera District</option>
+       <option value ="yc">Gatsibo District</option>
+       <option value ="zc">Kayonza District</option>
+       <option value ="ab">Kirehe District</option>
+       <option value ="bb">Ngoma District</option>
+       <option value ="cb">Nyagatare District</option>
+       <option value ="dd">Rwamagana District</option>
+       
+   </select>
+   </div>
+
+  </div>
+  </div>
+
+
+</div>
+<script type="text/javascript">
+	var geojson;
+	var map = L.map('map',{zoomControl: true}).setView([-2.0334,29.8993], 8);
+    map.zoomControl.setPosition('topright');
+    mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; ' + mapLink,maxZoom: 18, minZoom: 9
+            }).addTo(map);
+
+     function getColor(d) {
+            return d > 5001 ? '#a50f15':
+                   d > 4001  ? '#de2d26':
+                   d > 3001  ? '#fb6a4a':
+                   d > 0  ? '#fcae91': 
+                            '#fee5d9';
+                }
+
+        function style(feature) {
+            return {
+                fillColor: getColor(feature.properties.density),
+                weight: 2,
+                opacity: 10,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 10
+            };
+        }
+        
+		function Display(geofile){
+		     
+		        if(geojson === undefined){
+		            $.getJSON(geofile,function(rwandaData){geojson = L.geoJson( rwandaData, {
+		              style: style, onEachFeature: onEachFeature }).addTo(map);});
+		        } else{
+		            geojson.eachLayer(function (layer) { map.removeLayer(layer);
+		            map.removeControl(infoD); map.removeControl(legendD); map.removeControl(infoS);map.removeControl(legendS);
+		            map.removeControl(info); map.removeControl(legend); map.removeControl(infoP); map.removeControl(legendP); });
+		        
+		         $.getJSON(geofile,function(rwandaData){ geojson = L.geoJson( rwandaData, {
+		              style: style, onEachFeature: onEachFeature }).addTo(map); });
+		         }
+		}
+
+        function onEachFeature(feature, layer) {
+            layer.on({ mouseover: highlightFeature,mouseout: resetHighlight });
+        } 
+
+        function highlightFeature(e) {
+             var layer = e.target;
+            layer.setStyle({ weight: 5, color: '#666', dashArray: '', fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            //var mm;
+             $.getJSON('stats.json', function (data){
+             	$.each(data.Provinces, function(key, obj) {
+             		if(obj.Province == layer.feature.properties.Name){
+ 					var mm = obj.Membership;
+ 					var f = obj.Female;
+ 					var ml = obj.Male;
+ 					info.update(layer.feature.properties, mm, f, ml);
+                }
+            });
+                
+             });
+              
+        }
+
+        function resetHighlight(e) {
+             geojson.resetStyle(e.target);
+            info.update();
+        }
+        //custom control within the map
+        var info = L.control({position:'topleft'});
+        info.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+
+        // method that we will use to update the control based on feature properties passed
+        info.update = function (props,membr,fem,male) {
+        	           
+        	this._div.innerHTML = '<h4>Saving groups per Province</h4>' + (props ?
+                '<b>' + props.Name + ' Province</b><br />' + props.density + ' Saving groups<br/> <b> Total Membership: </b>'+ membr+'<br/> <b> Total Female: </b>'+fem +' <br/> <b>Total Male: </b>'+male +'</br>'
+                : 'Hover over a province');
+            
+        };
+        //legend
+        var legend = L.control({position: 'bottomright'});
+        legend.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'info legend'),grades = [0, 3001, 4001, 5001], labels = [];
+
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+
+		function getColorP(d) {
+            return d > 2001 ? '#7f2704':
+                   d > 1501 ? '#a63603':
+                   d > 1001 ? '#d94801':
+                   d > 501  ? '#f16913': 
+                   d > 0  ? '#fd8d3c':
+                            '#fff5eb';
+                
+                }
+
+        function styleP(feature) {
+            return {
+                fillColor: getColorP(feature.properties.density),
+                weight: 2,
+                opacity: 10,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 10
+            };
+        }
+        
+		function provinceDisplay(geofile){
+		     
+		        if(geojson === undefined){
+		            $.getJSON(geofile,function(rwandaData){geojson = L.geoJson( rwandaData, {
+		              style: styleP, onEachFeature: onEachFeatureP }).addTo(map);});
+		        } else{
+		            geojson.eachLayer(function (layer) { map.removeLayer(layer);
+		            map.removeControl(infoD); map.removeControl(legendD); map.removeControl(infoS);map.removeControl(legendS);
+		            map.removeControl(info); map.removeControl(legend);map.removeControl(infoP); map.removeControl(legendP); });
+		        		        
+		         $.getJSON(geofile,function(rwandaData){ geojson = L.geoJson( rwandaData, {
+		              style: styleP, onEachFeature: onEachFeatureP }).addTo(map); });
+		         }
+		}
+
+        function onEachFeatureP(feature, layer) {
+            layer.on({ mouseover: highlightFeatureP,mouseout: resetHighlightP });
+        } 
+
+        function highlightFeatureP(e) {
+             var layer = e.target;
+            layer.setStyle({ weight: 5, color: '#666', dashArray: '', fillOpacity: 3 });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+
+            $.getJSON('stats.json', function (data){
+            	$.each(data.Districts, function(key, obj) {
+             		if(obj.District == layer.feature.properties.Name){
+ 					var mm1 = obj.Membership;
+ 					var f1 = obj.Female;
+ 					var ml1 = obj.Male;
+ 					console.log(mm1);
+ 				 infoP.update(layer.feature.properties, mm1, f1, ml1);	
+                }    
+            });
+                
+             });
+              
+            }
+
+        function resetHighlightP(e) {
+             geojson.resetStyle(e.target);
+            infoP.update();
+        }
+        //custom control within the map
+        var infoP = L.control({position:'topleft'});
+        infoP.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+
+        // method that we will use to update the control based on feature properties passed
+        infoP.update = function (props,membr,fem,male) {
+            this._div.innerHTML = '<h4>Saving groups in each District per Province</h4>' + (props ?
+                '<b>' + props.Name + ' Province</b><br />' + props.density + ' Saving groups<br/> <b> Total Membership: </b>'+ membr+'<br/> <b> Total Female: </b>'+fem +' <br/> <b>Total Male: </b>'+male +'</br>'
+                : 'Hover over a province');
+            
+        };
+        //legend
+        var legendP = L.control({position: 'bottomright'});
+        legendP.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'info legend'),grades = [0, 501, 1001, 1501, 2001], labels = [];
+
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorP(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+            return div;
+        };
+
+        function getColorD(d) {
+            return d > 2001 ? '#00441b':
+                   d > 1001  ? '#006d2c':
+                   d > 801  ? '#238b45':
+                   d > 601  ? '#41ab5d': 
+                   d > 401  ? '#74c476':
+                   d > 201  ? '#a1d99b':
+                   d > 0  ? '#c7e9c0':
+                            '#e5f5e0';
+                }
+          function styleD(feature) {
+            return {
+                fillColor: getColorD(feature.properties.density), weight: 2, opacity: 10, color: 'white',
+                dashArray: '3', fillOpacity: 10 };
+        }
+		  function districtDisplay(geofile){
+		    if(geojson === undefined ){
+		       $.getJSON(geofile,function(rwandaData){ geojson = L.geoJson( rwandaData, {style: styleD, onEachFeature: onEachFeatureD
+		            }).addTo(map); });
+		    }
+		    else{
+		       geojson.eachLayer(function (layer) { map.removeLayer(layer);
+		            map.removeControl(infoD); map.removeControl(legendD); map.removeControl(infoS);map.removeControl(legendS);
+		            map.removeControl(info); map.removeControl(legend);map.removeControl(infoP); map.removeControl(legendP); });
+		        
+		        $.getJSON(geofile,function(rwandaData){geojson = L.geoJson( rwandaData, {
+		              style: styleD, onEachFeature: onEachFeatureD
+		            }).addTo(map);
+		          });
+		    }
+		}
+        function onEachFeatureD(feature, layer) {
+            layer.on({ mouseover: highlightFeatureD, mouseout: resetHighlightD               
+            });
+        }
+        
+
+        function highlightFeatureD(e) {
+             var layer = e.target;
+            layer.setStyle({ weight: 5, color: '#666', dashArray: '', fillOpacity: 3 });
+
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+
+            $.getJSON('stats.json', function (data){
+             	$.each(data.Districts, function(key, obj) {
+             		if(obj.District == layer.feature.properties.Name){
+             			console.log(obj.District);
+ 					var mm = obj.Membership;
+ 					var f = obj.Female;
+ 					var ml = obj.Male;
+
+ 					infoD.update(layer.feature.properties, mm, f, ml);
+                }
+            });
+                
+             });
+            
+        }
+
+        function resetHighlightD(e) {
+             geojson.resetStyle(e.target);
+            infoD.update();
+        }
+
+        //custom control within the map
+         var infoD = L.control({position:'topleft'});
+
+        infoD.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+
+        // method that we will use to update the control based on feature properties passed
+        infoD.update = function (props, membr, fem, male) {
+            this._div.innerHTML = '<h4>Saving groups per District</h4>' +  (props ?
+                '<b>' + props.Name + ' District</b><br />' + props.density + ' Saving groups <br/> <b> Total Membership: </b>'+ membr+'<br/> <b> Total Female: </b>'+fem +' <br/> <b>Total Male: </b>'+male +'</br>'
+                : 'Hover over a district');
+        };
+        //legend
+        var legendD = L.control({position: 'bottomright'});
+        legendD.onAdd = function (map) { var div = L.DomUtil.create('div', 'info legend'), grades = [0, 201, 401, 601, 801, 1001, 2001,], labels = [];
+
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorD(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+
+            return div;
+        };
+
+        function getColorS(d) {
+            return d > 141 ? '#7f2704':
+                   d > 121  ? '#a63603':
+                   d > 101  ? '#d94801':
+                   d > 81  ? '#f16913': 
+                   d > 61  ? '#fd8d3c':
+                   d > 41  ? '#fdae6b':
+                   d > 21  ? '#fdd0a2':
+                   d > 0  ? '#fee6ce':
+                            '#fff5eb';
+                }
+  
+        function styleS(feature) {
+            return { fillColor: getColorS(feature.properties.density), weight: 2, opacity: 10, color: 'white',
+                dashArray: '3', fillOpacity: 10 };
+        }
+ 
+        function sectorDisplay(geofile){
+            if(geojson === undefined){
+            $.getJSON(geofile,function(rwandaData){ geojson = L.geoJson( rwandaData, {
+              style: styleS, onEachFeature: onEachFeatureS }).addTo(map); });
+	        }
+	        else{
+	            geojson.eachLayer(function (layer) { map.removeLayer(layer);
+		            map.removeControl(infoD); map.removeControl(legendD); map.removeControl(infoS);map.removeControl(legendS);
+		            map.removeControl(info); map.removeControl(legend);map.removeControl(infoP); map.removeControl(legendP); });
+		        
+	            $.getJSON(geofile,function(rwandaData){ geojson = L.geoJson( rwandaData, {
+	              style: styleS,onEachFeature: onEachFeatureS }).addTo(map);}); 
+	        }
+             
+		}
+        function onEachFeatureS(feature, layer) {
+            layer.on({ mouseover: highlightFeatureS, mouseout: resetHighlightS });
+        }
+       
+        function highlightFeatureS(e) {
+             var layer = e.target;
+            layer.setStyle({weight: 5, color: '#666', dashArray: '', fillOpacity: 3 });
+
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+
+            infoS.update(layer.feature.properties);
+        }
+
+        function resetHighlightS(e) {
+             geojson.resetStyle(e.target);
+            infoS.update();
+        }
+
+
+        //custom control within the map
+         var infoS = L.control({position:'topleft'});
+
+        infoS.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+
+        // method that we will use to update the control based on feature properties passed
+        infoS.update = function (props) {
+            this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                : 'Hover over a Sector');
+        };
+        //legend
+        var legendS = L.control({position: 'bottomright'});
+
+        legendS.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 21, 41, 61, 81, 101, 121,141],
+                labels = [];
+
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColorS(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+
+            return div;
+        };
+
+	
+   function handler1(){
+   	document.getElementById('ge').value = "";
+		document.getElementById('geo').value = "";
+   if(document.getElementById('pro')){
+	   	switch(document.getElementById('pro').value){
+	   		case "aa" : provinceDisplay("Eastern_Province.geojson");
+	   		            break;
+	   		case "ba" : provinceDisplay("Western_Province.geojson");
+	   					break;
+	   		case "ca" : provinceDisplay("Kigali_geojson.geojson");
+	   					break;
+	   		case "da" : provinceDisplay("Northern_Province.geojson");
+	   					break;
+	   		case "ea" : provinceDisplay("Southern_Province.geojson");
+	   					break;
+	   	}
+   	legendP.addTo(map);
+                  infoP.addTo(map);
+   }
+}
+ function handler(){
+ 	document.getElementById('pro').value = "";
+		document.getElementById('ge').value = "";
+  if(document.getElementById('geo')){
+		 switch(document.getElementById('geo').value){
+		 	case "a": Display("admin4.geojson");
+					 	legend.addTo(map);
+					 	info.addTo(map);
+				      break;
+		    case "b": districtDisplay("District_Rwanda.geojson");
+		    legendD.addTo(map);
+		    infoD.addTo(map);
+				      break; 
+		    case "c": sectorDisplay("Sector_Rwanda.geojson");
+					    legendS.addTo(map);
+					    infoS.addTo(map);
+				      break; 
+		 }
+		 
+	}
+}
+	function handler2(){
+		document.getElementById('pro').value = "";
+		document.getElementById('geo').value = "";
+  if(document.getElementById('ge')){
+		 switch(document.getElementById('ge').value){
+		 	case "ac" : sectorDisplay("districts/Gasabo.geojson");
+		                break;
+		    case "bc" : sectorDisplay("districts/Kicukiro.geojson");
+		                break;
+		    case "cc" : sectorDisplay("districts/Nyarugenge.geojson");
+		                break; 
+		    case "dc" : sectorDisplay("districts/Burera.geojson");
+		                break;
+		    case "ec" : sectorDisplay("districts/Gakenke.geojson");
+		                break;
+		    case "fc" : sectorDisplay("districts/Gicumbi.geojson");
+		                break;
+		    case "gc" : sectorDisplay("districts/Musanze.geojson");
+		                break;
+		    case "hc" : sectorDisplay("districts/Rulindo.geojson");
+		                break;
+		    case "ic" : sectorDisplay("districts/Gisagara.geojson");
+		                break;
+		    case "jc" : sectorDisplay("districts/Huye.geojson");
+		                break;
+			case "kc" : sectorDisplay("districts/Kamonyi.geojson");
+		                break; 
+		    case "lc" : sectorDisplay("districts/Muhanga.geojson");
+		                break;
+		    case "mc" : sectorDisplay("districts/Nyamagabe.geojson");
+		                break; 
+		    case "nc" : sectorDisplay("districts/Nyanza.geojson");
+		                break; 
+		    case "oc" : sectorDisplay("districts/Nyaruguru.geojson");
+		                break;                                                                                              
+		    case "pc" : sectorDisplay("districts/Ruhango.geojson");
+		                break;                                                       
+		    case "qc" : sectorDisplay("districts/Karongi.geojson");
+		                break;                                                        
+		    case "rc" : sectorDisplay("districts/Ngororero.geojson");
+		                break;                                                       
+		    case "sc" : sectorDisplay("districts/Nyabihu.geojson");
+		                break;                                                        
+		    case "tc" : sectorDisplay("districts/Nyamasheke.geojson");
+		                break; 
+		    case "uc" : sectorDisplay("districts/Rubavu.geojson");
+		                break;   
+		    case "vc" : sectorDisplay("districts/Rusizi.geojson");
+		                break;  
+		    case "wc" : sectorDisplay("districts/Rutsiro.geojson");
+		                break;                                                        
+		    case "xc" : sectorDisplay("districts/Bugesera.geojson");
+		                break;                                                                    
+		    case "yc" : sectorDisplay("districts/Gatsibo.geojson");
+		                break;                                                                    
+		    case "zc" : sectorDisplay("districts/Kayonza.geojson");
+		                break;                                                                    
+		    case "ab" : sectorDisplay("districts/Kirehe.geojson");
+		                break;       
+		    case "bb" : sectorDisplay("districts/Ngoma.geojson");
+		                break;    
+		    case "cb" : sectorDisplay("districts/Nyagatare.geojson");
+		                break;                                                                                                    
+		    case "db" : sectorDisplay("districts/Rwamagana.geojson");
+		                break;                                                                                                                                          
+		 }
+
+   legendS.addTo(map);
+   infoS.addTo(map);            
+}
+
+}
+</script>
+</body>
+</html>
