@@ -4,8 +4,10 @@
 	<title>Leaflet map</title>
 	<meta charset="utf-8" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Latest compiled and minified CSS -->
+ 	 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!--<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">-->
+    <link href="css/bootstrap.css" rel="stylesheet">
     <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="js/jquery-3.1.1.min.js" ></script>
@@ -86,7 +88,7 @@
 </div>
 <script type="text/javascript">
 	var geojson;
-	var map = L.map('map',{zoomControl: true}).setView([-2.0334,29.8993], 8);
+	var map = L.map('map',{zoomControl: true}).setView([-2.0334,29.8993], 9);
     map.zoomControl.setPosition('topright');
     mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
         L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -329,7 +331,7 @@
             $.getJSON('stats.json', function (data){
              	$.each(data.Districts, function(key, obj) {
              		if(obj.District == layer.feature.properties.Name){
-             			console.log(obj.District);
+             			
  					var mm = obj.Membership;
  					var f = obj.Female;
  					var ml = obj.Male;
@@ -377,23 +379,23 @@
         };
 
         function getColorS(d) {
-            return d > 141 ? '#7f2704':
-                   d > 121  ? '#a63603':
-                   d > 101  ? '#d94801':
-                   d > 81  ? '#f16913': 
-                   d > 61  ? '#fd8d3c':
-                   d > 41  ? '#fdae6b':
-                   d > 21  ? '#fdd0a2':
-                   d > 0  ? '#fee6ce':
-                            '#fff5eb';
+            return d > 141 ? '#662506':
+                   d > 121  ? '#993404':
+                   d > 101  ? '#cc4c02':
+                   d > 81  ? '#ec7014': 
+                   d > 61  ? '#fe9929':
+                   d > 41  ? '#fec44f':
+                   d > 21  ? '#fee391':
+                   d > 0  ? '#fff7bc':
+                            '#ffffe5';
                 }
-  
         function styleS(feature) {
             return { fillColor: getColorS(feature.properties.density), weight: 2, opacity: 10, color: 'white',
                 dashArray: '3', fillOpacity: 10 };
         }
  
         function sectorDisplay(geofile){
+        	
             if(geojson === undefined){
             $.getJSON(geofile,function(rwandaData){ geojson = L.geoJson( rwandaData, {
               style: styleS, onEachFeature: onEachFeatureS }).addTo(map); });
@@ -411,7 +413,7 @@
         function onEachFeatureS(feature, layer) {
             layer.on({ mouseover: highlightFeatureS, mouseout: resetHighlightS });
         }
-       
+
         function highlightFeatureS(e) {
              var layer = e.target;
             layer.setStyle({weight: 5, color: '#666', dashArray: '', fillOpacity: 3 });
@@ -420,7 +422,21 @@
                 layer.bringToFront();
             }
 
-            infoS.update(layer.feature.properties);
+           $.getJSON('stats.json', function (data){
+             	$.each(data.Sectors, function(key, obj) {
+             	if(obj.District == layer.feature.properties.District){
+             		if(obj.Sector == layer.feature.properties.Name){
+             			console.log(obj.Sector);
+ 					var mm = obj.Membership;
+ 					var f = obj.Female;
+ 					var ml = obj.Male;
+
+ 					infoS.update(layer.feature.properties, mm, f, ml);
+                } }
+            });
+                
+             });
+            
         }
 
         function resetHighlightS(e) {
@@ -439,9 +455,9 @@
         };
 
         // method that we will use to update the control based on feature properties passed
-        infoS.update = function (props) {
+        infoS.update = function (props,membr,fem,male) {
             this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
-                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups'
+                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups <br/> <b> Total Membership: </b>'+ membr+'<br/> <b> Total Female: </b>'+fem +' <br/> <b>Total Male: </b>'+male +'</br>'
                 : 'Hover over a Sector');
         };
         //legend
@@ -481,11 +497,13 @@
 	   	}
    	legendP.addTo(map);
                   infoP.addTo(map);
+                  //map.setZoom(9);
    }
 }
  function handler(){
  	document.getElementById('pro').value = "";
 		document.getElementById('ge').value = "";
+		//map.setZoom(9);
   if(document.getElementById('geo')){
 		 switch(document.getElementById('geo').value){
 		 	case "a": Display("admin4.geojson");
@@ -510,7 +528,7 @@
   if(document.getElementById('ge')){
 		 switch(document.getElementById('ge').value){
 		 	case "ac" : sectorDisplay("districts/Gasabo.geojson");
-		                break;
+		 	             break;
 		    case "bc" : sectorDisplay("districts/Kicukiro.geojson");
 		                break;
 		    case "cc" : sectorDisplay("districts/Nyarugenge.geojson");
@@ -572,7 +590,8 @@
 		 }
 
    legendS.addTo(map);
-   infoS.addTo(map);            
+   infoS.addTo(map); 
+  // map.setZoom(10);           
 }
 
 }
