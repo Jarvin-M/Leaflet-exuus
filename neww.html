@@ -17,15 +17,16 @@
     .info h4 {margin: 0 0 10px;color: #777; font-size: 14px; font-weight: bold;}
     .legend {line-height: 18px;color: #555;}
     .legend i {width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.7;}
-    .form-control{border-radius: 0; border:none; border-right: 0px solid grey;  width: 130px; height: 25px; font-weight: bold; font-size: 12px; padding-right: 0px; background: #36464f; border-radius: 2px; color: white;}
-    #sel{background: rgba(0,0,0,0); padding: 0px; position: fixed; top: 15px; right:100px; z-index:1000;}
+    .form-control{border-radius: 0; border:none; border-right: 2px solid grey;  width: 155px; height: 25px; font-weight: bold; font-size: 12px; padding-right: 0px; background: #36464f; border-radius: 2px; color: white;}
+    #sel{background: rgba(0,0,0,0); padding: 0px; position: fixed; top: 15px; right:150px; z-index:1000;}
     .nopadding{ padding:0px 0px 0px 0px; margin: 0px 0px 0px 0px;}
+    .col-md-2{width:155px;}
     </style>
 </head>
 <body>
 <div id="map">
 	<div id="sel">
-	  <div class="rows nopadding" >
+	  <div class="rows " >
 	  <div class="col-md-2 nopadding" >
    <select id="geo" onchange="handler();" autocomplete = "off" class="form-control" >
    <option value="">National </option>
@@ -99,7 +100,7 @@
    </div>
 
    <div class="col-md-2 nopadding">
-    <select id="financial" onchange="handler3();" class="form-control" >
+    <select id="financial" onchange="handler4();" class="form-control" >
     	<option value ="">Financial Institutions</option>
     	<option value="banks">Banks</option>
     	<option value="mfi">MFIs</option>
@@ -109,7 +110,7 @@
 
    </div>
    <div class="col-md-2 nopadding">
-    <select id="mobile" onchange="handler3();" class="form-control" >
+    <select id="mobile" onchange="handler5();" class="form-control" >
      	<option value ="">Mobile Agents</option>
     	<option value="telco">Telco Agents</option>
     	<option value="bank">Bank Agents</option>
@@ -117,7 +118,7 @@
 
    </div>
    <div class="col-md-2 nopadding">
-    <select id="adult" onchange="handler3();" class="form-control" >
+    <select id="adult" onchange="handler6();" class="form-control" >
 	    <option value ="">Adult Population</option>
 	    <option value="female">Female</option>
 	    <option value="male">Male</option>
