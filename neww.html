@@ -12,21 +12,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="js/jquery-3.1.1.min.js" ></script>
     <style>
-    #map{ height: 700px; width:1200px; display: block; margin: auto; position: relative;}
+    #map{ height: 700px; width:1300px; display: block; margin: auto; position: fixed;}
     .info {padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;}
     .info h4 {margin: 0 0 10px;color: #777; font-size: 14px; font-weight: bold;}
     .legend {line-height: 18px;color: #555;}
     .legend i {width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.7;}
-    .form-control{border-radius: 0; border:none; border-right: 2px solid grey;  width: 180px; height: 25px; font-weight: bold; font-size: 12px; padding-right: 0px; background: #36464f; border-radius: 2px; color: white;}
-    #sel{background: rgba(0,0,0,0); padding: 0px 0px 0px 0px; position: absolute; top: 15px; right:100px; z-index:1000;}
-    .nopadding{ padding:0px; margin: 0px;}
+    .form-control{border-radius: 0; border:none; border-right: 0px solid grey;  width: 130px; height: 25px; font-weight: bold; font-size: 12px; padding-right: 0px; background: #36464f; border-radius: 2px; color: white;}
+    #sel{background: rgba(0,0,0,0); padding: 0px; position: fixed; top: 15px; right:100px; z-index:1000;}
+    .nopadding{ padding:0px 0px 0px 0px; margin: 0px 0px 0px 0px;}
     </style>
 </head>
 <body>
 <div id="map">
 	<div id="sel">
-	  <div class="rows">
-	  <div class="col-md-4 nopadding" >
+	  <div class="rows nopadding" >
+	  <div class="col-md-2 nopadding" >
    <select id="geo" onchange="handler();" autocomplete = "off" class="form-control" >
    <option value="">National </option>
        <option value="a"> Provinces</option>
@@ -34,7 +34,7 @@
        <option value ="c">Sectors</option>
    </select>
    		</div>
-   		<div class="col-md-4 nopadding">
+   		<div class="col-md-2 nopadding">
     <select id="pro" onchange="handler1();" autocomplete = "off" class="form-control">
    <option value="">Provinces </option>
        <option value="aa"> Eastern Province</option>
@@ -44,7 +44,7 @@
        <option value ="ea">Southern Province</option>
    </select>
    </div>
-   <div class="col-md-4 nopadding">
+   <div class="col-md-2 nopadding">
     <select id="ge" onchange="handler2();" class="form-control" >
    <option value="">Districts </option>
        <option value="ac"> Gasabo District</option>
@@ -79,6 +79,50 @@
        <option value ="dd">Rwamagana District</option>
        
    </select>
+   </div>
+    <div class="col-md-2 nopadding">
+    <select id="saving" onchange="handler3();" class="form-control" >
+    	<option value ="">Saving Groups</option>
+    	<option value="">CARE Rwanda</option>
+    	<option value="">HOPE Rwanda</option>
+    	<option value="">Global Communities</option>
+    	<option value="">FHI360/ROADS</option>
+    	<option value="">USAID/Direct Funding</option>
+    	<option value="">KNH</option>
+    	<option value="">World Relief Rwanda</option>
+    	<option value="">World Vision Rwanda</option>
+    	<option value="">CRS</option>
+    	<option value="">HAC</option>
+    	<option value="">Tearfund</option>
+    	<option value="">Plan International Rwanda</option>
+    </select>
+   </div>
+
+   <div class="col-md-2 nopadding">
+    <select id="financial" onchange="handler3();" class="form-control" >
+    	<option value ="">Financial Institutions</option>
+    	<option value="banks">Banks</option>
+    	<option value="mfi">MFIs</option>
+    	<option value="nus">Non-Umurenge SACCOs</option>
+    	<option value="us">Umurenge SACCOs</option>
+    </select>
+
+   </div>
+   <div class="col-md-2 nopadding">
+    <select id="mobile" onchange="handler3();" class="form-control" >
+     	<option value ="">Mobile Agents</option>
+    	<option value="telco">Telco Agents</option>
+    	<option value="bank">Bank Agents</option>
+    </select>
+
+   </div>
+   <div class="col-md-2 nopadding">
+    <select id="adult" onchange="handler3();" class="form-control" >
+	    <option value ="">Adult Population</option>
+	    <option value="female">Female</option>
+	    <option value="male">Male</option>
+    </select>
+
    </div>
 
   </div>
@@ -411,8 +455,18 @@
              
 		}
         function onEachFeatureS(feature, layer) {
-            layer.on({ mouseover: highlightFeatureS, mouseout: resetHighlightS });
+            layer.on({ mouseover: highlightFeatureS, mouseout: resetHighlightS, click: zoomToFeature});
         }
+        function zoomToFeature(e) {
+
+        	var bounds = e.target.getBounds();
+        	map.fitBounds(bounds);
+        	var center = bounds.getCenter();
+        	//map.panTo(center);
+        	map.setZoom(10);
+		    
+		}
+
 
         function highlightFeatureS(e) {
              var layer = e.target;
@@ -426,8 +480,7 @@
              	$.each(data.Sectors, function(key, obj) {
              	if(obj.District == layer.feature.properties.District){
              		if(obj.Sector == layer.feature.properties.Name){
-             			console.log(obj.Sector);
- 					var mm = obj.Membership;
+             		var mm = obj.Membership;
  					var f = obj.Female;
  					var ml = obj.Male;
 
@@ -591,7 +644,8 @@
 
    legendS.addTo(map);
    infoS.addTo(map); 
-  // map.setZoom(10);           
+  // map.setZoom(10); 
+  map.fire('click');          
 }
 
 }
