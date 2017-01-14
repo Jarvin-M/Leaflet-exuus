@@ -274,6 +274,26 @@
             layer.on({ mouseover: highlightFeatureP,mouseout: resetHighlightP });
             map.setView([-2.0334,29.8993], 9);
         } 
+		function kigaliProDisplay(geofile){
+		     
+		        if(geojson === undefined){
+		            $.getJSON(geofile,function(rwandaData){geojson = L.geoJson( rwandaData, {
+		              style: styleP, onEachFeature: onEachFeatureKP }).addTo(map);});
+		        } else{
+		            geojson.eachLayer(function (layer) { map.removeLayer(layer);
+		            map.removeControl(infoD); map.removeControl(legendD); map.removeControl(infoS);map.removeControl(legendS);
+		            map.removeControl(info); map.removeControl(legend);map.removeControl(infoP); map.removeControl(legendP); });
+		        		        
+		         $.getJSON(geofile,function(rwandaData){ geojson = L.geoJson( rwandaData, {
+		              style: styleP, onEachFeature: onEachFeatureKP }).addTo(map); });
+		         }
+		}
+
+        function onEachFeatureKP(feature, layer) {
+            layer.on({ mouseover: highlightFeatureP,mouseout: resetHighlightP });
+            var bounds = layer.getBounds();
+        	map.fitBounds(bounds,{maxZoom: 10});
+        } 
 
         function highlightFeatureP(e) {
              var layer = e.target;
@@ -458,6 +478,28 @@
 	        }
            
 		}
+		function kigaliDisplay(geofile){
+        	
+            if(geojson === undefined){
+            $.getJSON(geofile,function(rwandaData){ geojson = L.geoJson( rwandaData, {
+              style: styleS, onEachFeature: onEachFeaturekigali }).addTo(map); });
+	        }
+	        else{
+	            geojson.eachLayer(function (layer) { map.removeLayer(layer);
+		            map.removeControl(infoD); map.removeControl(legendD); map.removeControl(infoS);map.removeControl(legendS);
+		            map.removeControl(info); map.removeControl(legend);map.removeControl(infoP); map.removeControl(legendP); });
+		        
+	            $.getJSON(geofile,function(rwandaData){ geojson = L.geoJson( rwandaData, {
+	              style: styleS,onEachFeature: onEachFeaturekigali }).addTo(map);}); 
+	        }
+           
+		}
+		function onEachFeaturekigali(feature, layer) {
+            layer.on({ mouseover: highlightFeatureS, mouseout: resetHighlightS});
+            var bounds = layer.getBounds();
+        	map.fitBounds(bounds,{maxZoom: 11});
+        	       	
+        }
         function onEachFeatureS(feature, layer) {
             layer.on({ mouseover: highlightFeatureS, mouseout: resetHighlightS});
             var bounds = layer.getBounds();
@@ -538,7 +580,7 @@
 	   		            break;
 	   		case "western" : provinceDisplay("Western_Province.geojson");
 	   					break;
-	   		case "kigali-city" : provinceDisplay("Kigali_geojson.geojson");
+	   		case "kigali-city" : kigaliProDisplay("Kigali_geojson.geojson");
 	   					break;
 	   		case "northen" : provinceDisplay("Northern_Province.geojson");
 	   					break;
@@ -578,12 +620,12 @@
 		
   if(document.getElementById('ge')){
 		 switch(document.getElementById('ge').value){
-		 	case "gasabo" : sectorDisplay("districts/Gasabo.geojson");
+		 	case "gasabo" : kigaliDisplay("districts/Gasabo.geojson");
 
 		 	             break;
-		    case "kicukiro" : sectorDisplay("districts/Kicukiro.geojson");
+		    case "kicukiro" : kigaliDisplay("districts/Kicukiro.geojson");
 		                break;
-		    case "nyarugenge" : sectorDisplay("districts/Nyarugenge.geojson");
+		    case "nyarugenge" : kigaliDisplay("districts/Nyarugenge.geojson");
 		                break; 
 		    case "burera" : sectorDisplay("districts/Burera.geojson");
 		                break;
