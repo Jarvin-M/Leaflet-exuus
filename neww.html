@@ -30,54 +30,54 @@
 	  <div class="col-md-2 nopadding" >
    <select id="geo" onchange="handler();" autocomplete = "off" class="form-control" >
    <option value="">National </option>
-       <option value="a"> Provinces</option>
-       <option value="b">Districts</option>
-       <option value ="c">Sectors</option>
+       <option value="provinces"> Provinces</option>
+       <option value="districts">Districts</option>
+       <option value ="sectors">Sectors</option>
    </select>
    		</div>
    		<div class="col-md-2 nopadding">
     <select id="pro" onchange="handler1();" autocomplete = "off" class="form-control">
    <option value="">Provinces </option>
-       <option value="aa"> Eastern Province</option>
-       <option value="ba">Western Province</option>
-       <option value ="ca">Kigali City</option>
-       <option value ="da">Northern Province</option>
-       <option value ="ea">Southern Province</option>
+       <option value="eastern"> Eastern Province</option>
+       <option value="western">Western Province</option>
+       <option value ="kigali-city">Kigali City</option>
+       <option value ="northen">Northern Province</option>
+       <option value ="southern">Southern Province</option>
    </select>
    </div>
    <div class="col-md-2 nopadding">
     <select id="ge" onchange="handler2();" class="form-control" >
    <option value="">Districts </option>
-       <option value="ac"> Gasabo District</option>
-       <option value="bc"> Kicukiro District</option>
-       <option value ="cc">Nyarugenge District</option>
-       <option value ="dc">Burera District</option>
-       <option value ="ec">Gakenke District</option>
-       <option value ="fc">Gicumbi District</option>
-       <option value ="gc">Musanze District</option>
-       <option value ="hc">Rulindo District</option>
-       <option value ="ic">Gisagara District</option>
-       <option value ="jc">Huye District</option>
-       <option value ="kc">Kamonyi District</option>
-       <option value ="lc">Muhanga District</option>
-       <option value ="mc">Nyamagabe District</option>
-       <option value ="nc">Nyanza District</option>
-       <option value ="oc">Nyaruguru District</option>
-       <option value ="pc">Ruhango District</option>
-       <option value ="qc">Karongi District</option>
-       <option value ="rc">Ngororero District</option>
-       <option value ="sc">Nyabihu District</option>
-       <option value ="tc">Nyamasheke District</option>
-       <option value ="uc">Rubavu District</option>
-       <option value ="vc">Rusizi District</option>
-       <option value ="wc">Rutsiro District</option>
-       <option value ="xc">Bugesera District</option>
-       <option value ="yc">Gatsibo District</option>
-       <option value ="zc">Kayonza District</option>
-       <option value ="ab">Kirehe District</option>
-       <option value ="bb">Ngoma District</option>
-       <option value ="cb">Nyagatare District</option>
-       <option value ="dd">Rwamagana District</option>
+       <option value="gasabo"> Gasabo District</option>
+       <option value="kicukiro"> Kicukiro District</option>
+       <option value ="nyarugenge">Nyarugenge District</option>
+       <option value ="burera">Burera District</option>
+       <option value ="gakenke">Gakenke District</option>
+       <option value ="gicumbi">Gicumbi District</option>
+       <option value ="musanze">Musanze District</option>
+       <option value ="rulindo">Rulindo District</option>
+       <option value ="gisagara">Gisagara District</option>
+       <option value ="huye">Huye District</option>
+       <option value ="kamonyi">Kamonyi District</option>
+       <option value ="muhanga">Muhanga District</option>
+       <option value ="nyamagabe">Nyamagabe District</option>
+       <option value ="nyanza">Nyanza District</option>
+       <option value ="nyaruguru">Nyaruguru District</option>
+       <option value ="ruhango">Ruhango District</option>
+       <option value ="karongi">Karongi District</option>
+       <option value ="ngororero">Ngororero District</option>
+       <option value ="nyabihu">Nyabihu District</option>
+       <option value ="nyamasheke">Nyamasheke District</option>
+       <option value ="rubavu">Rubavu District</option>
+       <option value ="rusizi">Rusizi District</option>
+       <option value ="rutsiro">Rutsiro District</option>
+       <option value ="bugesera">Bugesera District</option>
+       <option value ="gatsibo">Gatsibo District</option>
+       <option value ="kayonza">Kayonza District</option>
+       <option value ="kirehe">Kirehe District</option>
+       <option value ="ngoma">Ngoma District</option>
+       <option value ="nyagatare">Nyagatare District</option>
+       <option value ="rwamagana">Rwamagana District</option>
        
    </select>
    </div>
@@ -137,7 +137,7 @@
     map.zoomControl.setPosition('topright');
     mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
         L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'Map data &copy; ' + mapLink,maxZoom: 18, minZoom: 9
+            attribution: 'Map data &copy; ' + mapLink,maxZoom: 13, minZoom: 9
             }).addTo(map);
 
      function getColor(d) {
@@ -176,6 +176,7 @@
 
         function onEachFeature(feature, layer) {
             layer.on({ mouseover: highlightFeature,mouseout: resetHighlight });
+            map.setView([-2.0334,29.8993], 9);
         } 
 
         function highlightFeature(e) {
@@ -184,7 +185,7 @@
             if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
                 layer.bringToFront();
             }
-            //var mm;
+            
              $.getJSON('stats.json', function (data){
              	$.each(data.Provinces, function(key, obj) {
              		if(obj.Province == layer.feature.properties.Name){
@@ -271,6 +272,7 @@
 
         function onEachFeatureP(feature, layer) {
             layer.on({ mouseover: highlightFeatureP,mouseout: resetHighlightP });
+            map.setView([-2.0334,29.8993], 9);
         } 
 
         function highlightFeatureP(e) {
@@ -362,6 +364,7 @@
         function onEachFeatureD(feature, layer) {
             layer.on({ mouseover: highlightFeatureD, mouseout: resetHighlightD               
             });
+            map.setView([-2.0334,29.8993], 9);
         }
         
 
@@ -453,22 +456,15 @@
 	            $.getJSON(geofile,function(rwandaData){ geojson = L.geoJson( rwandaData, {
 	              style: styleS,onEachFeature: onEachFeatureS }).addTo(map);}); 
 	        }
-             
+           
 		}
         function onEachFeatureS(feature, layer) {
-            layer.on({ mouseover: highlightFeatureS, mouseout: resetHighlightS, click: zoomToFeature});
+            layer.on({ mouseover: highlightFeatureS, mouseout: resetHighlightS});
+            var bounds = layer.getBounds();
+        	map.fitBounds(bounds,{maxZoom: 10});
+        	       	
         }
-        function zoomToFeature(e) {
-
-        	var bounds = e.target.getBounds();
-        	map.fitBounds(bounds);
-        	var center = bounds.getCenter();
-        	//map.panTo(center);
-        	map.setZoom(10);
-		    
-		}
-
-
+        
         function highlightFeatureS(e) {
              var layer = e.target;
             layer.setStyle({weight: 5, color: '#666', dashArray: '', fillOpacity: 3 });
@@ -538,37 +534,37 @@
 		document.getElementById('geo').value = "";
    if(document.getElementById('pro')){
 	   	switch(document.getElementById('pro').value){
-	   		case "aa" : provinceDisplay("Eastern_Province.geojson");
+	   		case "eastern" : provinceDisplay("Eastern_Province.geojson");
 	   		            break;
-	   		case "ba" : provinceDisplay("Western_Province.geojson");
+	   		case "western" : provinceDisplay("Western_Province.geojson");
 	   					break;
-	   		case "ca" : provinceDisplay("Kigali_geojson.geojson");
+	   		case "kigali-city" : provinceDisplay("Kigali_geojson.geojson");
 	   					break;
-	   		case "da" : provinceDisplay("Northern_Province.geojson");
+	   		case "northen" : provinceDisplay("Northern_Province.geojson");
 	   					break;
-	   		case "ea" : provinceDisplay("Southern_Province.geojson");
+	   		case "southern" : provinceDisplay("Southern_Province.geojson");
 	   					break;
 	   	}
    	legendP.addTo(map);
                   infoP.addTo(map);
-                  //map.setZoom(9);
+                
    }
 }
  function handler(){
  	document.getElementById('pro').value = "";
 		document.getElementById('ge').value = "";
-		//map.setZoom(9);
+		
   if(document.getElementById('geo')){
 		 switch(document.getElementById('geo').value){
-		 	case "a": Display("admin4.geojson");
+		 	case "provinces": Display("admin4.geojson");
 					 	legend.addTo(map);
 					 	info.addTo(map);
 				      break;
-		    case "b": districtDisplay("District_Rwanda.geojson");
+		    case "districts": districtDisplay("District_Rwanda.geojson");
 		    legendD.addTo(map);
 		    infoD.addTo(map);
 				      break; 
-		    case "c": sectorDisplay("Sector_Rwanda.geojson");
+		    case "sectors": sectorDisplay("Sector_Rwanda.geojson");
 					    legendS.addTo(map);
 					    infoS.addTo(map);
 				      break; 
@@ -579,74 +575,75 @@
 	function handler2(){
 		document.getElementById('pro').value = "";
 		document.getElementById('geo').value = "";
+		
   if(document.getElementById('ge')){
 		 switch(document.getElementById('ge').value){
-		 	case "ac" : sectorDisplay("districts/Gasabo.geojson");
+		 	case "gasabo" : sectorDisplay("districts/Gasabo.geojson");
+
 		 	             break;
-		    case "bc" : sectorDisplay("districts/Kicukiro.geojson");
+		    case "kicukiro" : sectorDisplay("districts/Kicukiro.geojson");
 		                break;
-		    case "cc" : sectorDisplay("districts/Nyarugenge.geojson");
+		    case "nyarugenge" : sectorDisplay("districts/Nyarugenge.geojson");
 		                break; 
-		    case "dc" : sectorDisplay("districts/Burera.geojson");
+		    case "burera" : sectorDisplay("districts/Burera.geojson");
 		                break;
-		    case "ec" : sectorDisplay("districts/Gakenke.geojson");
+		    case "gakenke" : sectorDisplay("districts/Gakenke.geojson");
 		                break;
-		    case "fc" : sectorDisplay("districts/Gicumbi.geojson");
+		    case "gicumbi" : sectorDisplay("districts/Gicumbi.geojson");
 		                break;
-		    case "gc" : sectorDisplay("districts/Musanze.geojson");
+		    case "musanze" : sectorDisplay("districts/Musanze.geojson");
 		                break;
-		    case "hc" : sectorDisplay("districts/Rulindo.geojson");
+		    case "rulindo" : sectorDisplay("districts/Rulindo.geojson");
 		                break;
-		    case "ic" : sectorDisplay("districts/Gisagara.geojson");
+		    case "gisagara" : sectorDisplay("districts/Gisagara.geojson");
 		                break;
-		    case "jc" : sectorDisplay("districts/Huye.geojson");
+		    case "huye" : sectorDisplay("districts/Huye.geojson");
 		                break;
-			case "kc" : sectorDisplay("districts/Kamonyi.geojson");
+			case "kamonyi" : sectorDisplay("districts/Kamonyi.geojson");
 		                break; 
-		    case "lc" : sectorDisplay("districts/Muhanga.geojson");
+		    case "muhanga" : sectorDisplay("districts/Muhanga.geojson");
 		                break;
-		    case "mc" : sectorDisplay("districts/Nyamagabe.geojson");
+		    case "nyamagabe" : sectorDisplay("districts/Nyamagabe.geojson");
 		                break; 
-		    case "nc" : sectorDisplay("districts/Nyanza.geojson");
+		    case "nyanza" : sectorDisplay("districts/Nyanza.geojson");
 		                break; 
-		    case "oc" : sectorDisplay("districts/Nyaruguru.geojson");
+		    case "nyaruguru" : sectorDisplay("districts/Nyaruguru.geojson");
 		                break;                                                                                              
-		    case "pc" : sectorDisplay("districts/Ruhango.geojson");
+		    case "ruhango" : sectorDisplay("districts/Ruhango.geojson");
 		                break;                                                       
-		    case "qc" : sectorDisplay("districts/Karongi.geojson");
+		    case "karongi" : sectorDisplay("districts/Karongi.geojson");
 		                break;                                                        
-		    case "rc" : sectorDisplay("districts/Ngororero.geojson");
+		    case "ngororero" : sectorDisplay("districts/Ngororero.geojson");
 		                break;                                                       
-		    case "sc" : sectorDisplay("districts/Nyabihu.geojson");
+		    case "nyabihu" : sectorDisplay("districts/Nyabihu.geojson");
 		                break;                                                        
-		    case "tc" : sectorDisplay("districts/Nyamasheke.geojson");
+		    case "nyamasheke" : sectorDisplay("districts/Nyamasheke.geojson");
 		                break; 
-		    case "uc" : sectorDisplay("districts/Rubavu.geojson");
+		    case "rubavu" : sectorDisplay("districts/Rubavu.geojson");
 		                break;   
-		    case "vc" : sectorDisplay("districts/Rusizi.geojson");
+		    case "rusizi" : sectorDisplay("districts/Rusizi.geojson");
 		                break;  
-		    case "wc" : sectorDisplay("districts/Rutsiro.geojson");
+		    case "rutsiro" : sectorDisplay("districts/Rutsiro.geojson");
 		                break;                                                        
-		    case "xc" : sectorDisplay("districts/Bugesera.geojson");
+		    case "bugesera" : sectorDisplay("districts/Bugesera.geojson");
 		                break;                                                                    
-		    case "yc" : sectorDisplay("districts/Gatsibo.geojson");
+		    case "gatsibo" : sectorDisplay("districts/Gatsibo.geojson");
 		                break;                                                                    
-		    case "zc" : sectorDisplay("districts/Kayonza.geojson");
+		    case "kayonza" : sectorDisplay("districts/Kayonza.geojson");
 		                break;                                                                    
-		    case "ab" : sectorDisplay("districts/Kirehe.geojson");
+		    case "kirehe" : sectorDisplay("districts/Kirehe.geojson");
 		                break;       
-		    case "bb" : sectorDisplay("districts/Ngoma.geojson");
+		    case "ngoma" : sectorDisplay("districts/Ngoma.geojson");
 		                break;    
-		    case "cb" : sectorDisplay("districts/Nyagatare.geojson");
+		    case "nyagatare" : sectorDisplay("districts/Nyagatare.geojson");
 		                break;                                                                                                    
-		    case "db" : sectorDisplay("districts/Rwamagana.geojson");
+		    case "rwamagana" : sectorDisplay("districts/Rwamagana.geojson");
 		                break;                                                                                                                                          
 		 }
 
    legendS.addTo(map);
    infoS.addTo(map); 
-  // map.setZoom(10); 
-  map.fire('click');          
+            
 }
 
 }
