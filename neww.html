@@ -148,15 +148,29 @@
                             '#fee5d9';
                 }
 
-        function style(feature) {
-            return {
-                fillColor: getColor(feature.properties.density),
+        function style(feature,layer) {
+        	$.getJSON('stats.json', function (data){
+        		$.each(data.Provinces, function(key, obj){
+        			
+        		geojson.setStyle({
+                fillColor: function ( ){ console.log(obj.Density);
+                							return obj.Density > 5001 ? '#a50f15':
+                								obj.Density > 4001  ? '#de2d26':
+							                    obj.Density > 3001  ? '#fb6a4a':
+							                    obj.Density > 0  ? '#fcae91': 
+							                    					'#fee5d9';  },
                 weight: 2,
                 opacity: 10,
                 color: 'white',
                 dashArray: '3',
                 fillOpacity: 10
-            };
+            });
+            
+        	
+        		});
+        	});
+
+        	
         }
         
 		function Display(geofile){
@@ -192,7 +206,14 @@
  					var mm = obj.Membership;
  					var f = obj.Female;
  					var ml = obj.Male;
- 					info.update(layer.feature.properties, mm, f, ml);
+ 					var dens = obj.Density;
+ 					var banks = obj.Male;
+ 					var mfi = obj.Male;
+ 					var nu = obj.Male;
+ 					var u = obj.Male;
+ 					var tl = obj.Male;
+ 					var ba = obj.Male;
+ 					info.update(layer.feature.properties, dens, mm, f, ml,banks,mfi,nu,u,tl,ba);
                 }
             });
                 
@@ -213,10 +234,10 @@
         };
 
         // method that we will use to update the control based on feature properties passed
-        info.update = function (props,membr,fem,male) {
+        info.update = function (props,density,membr,fem,male,banks,mfi,nu,u,tl,ba) {
         	           
         	this._div.innerHTML = '<h4>Saving groups per Province</h4>' + (props ?
-                '<b>' + props.Name + ' Province</b><br />' + props.density + ' Saving groups<br/> <b> Total Membership: </b>'+ membr+'<br/> <b> Total Female: </b>'+fem +' <br/> <b>Total Male: </b>'+male +'</br>'
+                '<b>' + props.Name + ' Province</b><br />' + density + ' Saving groups<br/> <b> Total Membership: </b>'+ membr+'<br/> <b> Total Female: </b>'+fem +' <br/> <b>Total Male: </b>'+male +'</br><b> Banks: </b>'+banks+'</br><b>MFIs: </b>'+ mfi+'</br><b> Non-Umurenge: </b>'+nu+'</br><b> Umurenge:</b>'+u+'</br><b>Telco Agents: </b>'+tl+'</br><b>Bank Agents:</b>'+ba+'</br>'
                 : 'Hover over a province');
             
         };
@@ -308,8 +329,14 @@
  					var mm1 = obj.Membership;
  					var f1 = obj.Female;
  					var ml1 = obj.Male;
- 					console.log(mm1);
- 				 infoP.update(layer.feature.properties, mm1, f1, ml1);	
+ 					var dens = obj.Density;
+ 					var banks = obj.Male;
+ 					var mfi = obj.Male;
+ 					var nu = obj.Male;
+ 					var u = obj.Male;
+ 					var tl = obj.Male;
+ 					var ba = obj.Male;
+ 				 infoP.update(layer.feature.properties,dens, mm1, f1, ml1,banks,mfi,nu,u,tl,ba);	
                 }    
             });
                 
@@ -330,9 +357,9 @@
         };
 
         // method that we will use to update the control based on feature properties passed
-        infoP.update = function (props,membr,fem,male) {
+        infoP.update = function (props,density,membr,fem,male,banks,mfi,nu,u,tl,ba) {
             this._div.innerHTML = '<h4>Saving groups in each District per Province</h4>' + (props ?
-                '<b>' + props.Name + ' Province</b><br />' + props.density + ' Saving groups<br/> <b> Total Membership: </b>'+ membr+'<br/> <b> Total Female: </b>'+fem +' <br/> <b>Total Male: </b>'+male +'</br>'
+                '<b>' + props.Name + ' Province</b><br />' + density + ' Saving groups<br/> <b> Total Membership: </b>'+ membr+'<br/> <b> Total Female: </b>'+fem +' <br/> <b>Total Male: </b>'+male +'</br><b> Banks: </b>'+banks+'</br><b>MFIs: </b>'+ mfi+'</br><b> Non-Umurenge: </b>'+nu+'</br><b> Umurenge:</b>'+u+'</br><b>Telco Agents: </b>'+tl+'</br><b>Bank Agents:</b>'+ba+'</br>'
                 : 'Hover over a province');
             
         };
@@ -403,8 +430,14 @@
  					var mm = obj.Membership;
  					var f = obj.Female;
  					var ml = obj.Male;
-
- 					infoD.update(layer.feature.properties, mm, f, ml);
+ 					var dens = obj.Density;
+ 					var banks = obj.Male;
+ 					var mfi = obj.Male;
+ 					var nu = obj.Male;
+ 					var u = obj.Male;
+ 					var tl = obj.Male;
+ 					var ba = obj.Male;
+ 					infoD.update(layer.feature.properties,dens, mm, f, ml,banks,mfi,nu,u,tl,ba);
                 }
             });
                 
@@ -427,9 +460,9 @@
         };
 
         // method that we will use to update the control based on feature properties passed
-        infoD.update = function (props, membr, fem, male) {
+        infoD.update = function (props,density, membr, fem, male,banks,mfi,nu,u,tl,ba) {
             this._div.innerHTML = '<h4>Saving groups per District</h4>' +  (props ?
-                '<b>' + props.Name + ' District</b><br />' + props.density + ' Saving groups <br/> <b> Total Membership: </b>'+ membr+'<br/> <b> Total Female: </b>'+fem +' <br/> <b>Total Male: </b>'+male +'</br>'
+                '<b>' + props.Name + ' District</b><br />' + density + ' Saving groups <br/> <b> Total Membership: </b>'+ membr+'<br/> <b> Total Female: </b>'+fem +' <br/> <b>Total Male: </b>'+male +'</br><b> Banks: </b>'+banks+'</br><b>MFIs: </b>'+ mfi+'</br><b> Non-Umurenge: </b>'+nu+'</br><b> Umurenge:</b>'+u+'</br><b>Telco Agents: </b>'+tl+'</br><b>Bank Agents:</b>'+ba+'</br>'
                 : 'Hover over a district');
         };
         //legend
@@ -522,8 +555,14 @@
              		var mm = obj.Membership;
  					var f = obj.Female;
  					var ml = obj.Male;
-
- 					infoS.update(layer.feature.properties, mm, f, ml);
+ 					var dens = obj.Density;
+ 					var banks = obj.Male;
+ 					var mfi = obj.Male;
+ 					var nu = obj.Male;
+ 					var u = obj.Male;
+ 					var tl = obj.Male;
+ 					var ba = obj.Male;
+ 					infoS.update(layer.feature.properties,dens, mm, f, ml,banks,mfi,nu,u,tl,ba);
                 } }
             });
                 
@@ -547,9 +586,9 @@
         };
 
         // method that we will use to update the control based on feature properties passed
-        infoS.update = function (props,membr,fem,male) {
+        infoS.update = function (props,density,membr,fem,male,banks,mfi,nu,u,tl,ba) {
             this._div.innerHTML = '<h4>Saving groups per Sector</h4>' +  (props ?
-                '<b>' + props.Name + ' Sector</b><br />' + props.density + ' Saving groups <br/> <b> Total Membership: </b>'+ membr+'<br/> <b> Total Female: </b>'+fem +' <br/> <b>Total Male: </b>'+male +'</br>'
+                '<b>' + props.Name + ' Sector</b><br />' + density + ' Saving groups <br/> <b> Total Membership: </b>'+ membr+'<br/> <b> Total Female: </b>'+fem +' <br/> <b>Total Male: </b>'+male +'</br><b> Banks: </b>'+banks+'</br><b>MFIs: </b>'+ mfi+'</br><b> Non-Umurenge: </b>'+nu+'</br><b> Umurenge:</b>'+u+'</br><b>Telco Agents: </b>'+tl+'</br><b>Bank Agents:</b>'+ba+'</br>'
                 : 'Hover over a Sector');
         };
         //legend
