@@ -148,36 +148,39 @@
                             '#fee5d9';
                 }
 
-        function style(feature,layer) {
-        	$.getJSON('stats.json', function (data){
-        		$.each(data.Provinces, function(key, obj){
-        			
-        		geojson.setStyle({
-                fillColor: function ( ){ console.log(obj.Density);
-                							return obj.Density > 5001 ? '#a50f15':
-                								obj.Density > 4001  ? '#de2d26':
-							                    obj.Density > 3001  ? '#fb6a4a':
-							                    obj.Density > 0  ? '#fcae91': 
-							                    					'#fee5d9';  },
+        var Jsonfile;
+
+        $.getJSON('stats.json', function (data){
+        	Jsonfile = data;          		
+		});
+
+        function style(feature) {
+
+        	var density;
+
+        	$.each(Jsonfile.Provinces, function(key, obj){
+    			if(obj.Province == feature.properties.Name){
+    				density = obj.Density;
+    			}        			
+    		});
+    		return {
+                fillColor: getColor(density),
                 weight: 2,
                 opacity: 10,
                 color: 'white',
                 dashArray: '3',
                 fillOpacity: 10
-            });
-            
-        	
-        		});
-        	});
-
+    		};			                    
         	
         }
         
 		function Display(geofile){
 		     
 		        if(geojson === undefined){
-		            $.getJSON(geofile,function(rwandaData){geojson = L.geoJson( rwandaData, {
-		              style: style, onEachFeature: onEachFeature }).addTo(map);});
+		            $.getJSON(geofile,function(rwandaData){
+		            	geojson = L.geoJson( rwandaData, {
+		              		style: style, onEachFeature: onEachFeature }).addTo(map);
+		        });
 		        } else{
 		            geojson.eachLayer(function (layer) { map.removeLayer(layer);
 		            map.removeControl(infoD); map.removeControl(legendD); map.removeControl(infoS);map.removeControl(legendS);
@@ -266,8 +269,15 @@
                 }
 
         function styleP(feature) {
+        	var density;
+
+        	$.each(Jsonfile.Districts, function(key, obj){
+    			if(obj.District == feature.properties.Name){
+    				density = obj.Density;
+    			}        			
+    		});
             return {
-                fillColor: getColorP(feature.properties.density),
+                fillColor: getColorP(density),
                 weight: 2,
                 opacity: 10,
                 color: 'white',
@@ -388,8 +398,16 @@
                             '#e5f5e0';
                 }
           function styleD(feature) {
+          	var density;
+
+        	$.each(Jsonfile.Districts, function(key, obj){
+    			if(obj.District == feature.properties.Name){
+    				density = obj.Density;
+    			}        			
+    		});
             return {
-                fillColor: getColorD(feature.properties.density), weight: 2, opacity: 10, color: 'white',
+
+                fillColor: getColorD(density), weight: 2, opacity: 10, color: 'white',
                 dashArray: '3', fillOpacity: 10 };
         }
 		  function districtDisplay(geofile){
@@ -491,10 +509,34 @@
                             '#ffffe5';
                 }
         function styleS(feature) {
-            return { fillColor: getColorS(feature.properties.density), weight: 2, opacity: 10, color: 'white',
+        	var density;
+
+        	$.each(Jsonfile.Sectors, function(key, obj){
+    			if(obj.District == feature.properties.District){
+    				if(obj.Sector == feature.properties.Name){
+    				density = obj.Density;
+    			}
+    			}        			
+    		});
+            return { fillColor: getColorS(density), weight: 2, opacity: 10, color: 'white',
                 dashArray: '3', fillOpacity: 10 };
         }
- 
+ 		function sector(geofile){
+        	
+            if(geojson === undefined){
+            $.getJSON(geofile,function(rwandaData){ geojson = L.geoJson( rwandaData, {
+              style: styleS, onEachFeature: onEachFeatureSS }).addTo(map); });
+	        }
+	        else{
+	            geojson.eachLayer(function (layer) { map.removeLayer(layer);
+		            map.removeControl(infoD); map.removeControl(legendD); map.removeControl(infoS);map.removeControl(legendS);
+		            map.removeControl(info); map.removeControl(legend);map.removeControl(infoP); map.removeControl(legendP); });
+		        
+	            $.getJSON(geofile,function(rwandaData){ geojson = L.geoJson( rwandaData, {
+	              style: styleS,onEachFeature: onEachFeatureSS }).addTo(map);}); 
+	        }
+           
+		}
         function sectorDisplay(geofile){
         	
             if(geojson === undefined){
@@ -539,7 +581,12 @@
         	map.fitBounds(bounds,{maxZoom: 10});
         	       	
         }
-        
+         function onEachFeatureSS(feature, layer) {
+             
+            layer.on({ mouseover: highlightFeatureS, mouseout: resetHighlightS});
+           map.setView([-2.0334,29.8993], 9);
+        	       	
+        }
         function highlightFeatureS(e) {
              var layer = e.target;
             layer.setStyle({weight: 5, color: '#666', dashArray: '', fillOpacity: 3 });
@@ -645,7 +692,7 @@
 		    legendD.addTo(map);
 		    infoD.addTo(map);
 				      break; 
-		    case "sectors": sectorDisplay("Sector_Rwanda.geojson");
+		    case "sectors": sector("Sector_Rwanda.geojson");
 					    legendS.addTo(map);
 					    infoS.addTo(map);
 				      break; 
