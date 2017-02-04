@@ -140,6 +140,10 @@
             attribution: 'Map data &copy; ' + mapLink,maxZoom: 13, minZoom: 9
             }).addTo(map);
 
+     var Jsonfile;
+     $.getJSON('stats.json', function (data){
+        	Jsonfile = data;          		
+		});    
      function getColor(d) {
             return d > 5001 ? '#a50f15':
                    d > 4001  ? '#de2d26':
@@ -148,11 +152,7 @@
                             '#fee5d9';
                 }
 
-        var Jsonfile;
-
-        $.getJSON('stats.json', function (data){
-        	Jsonfile = data;          		
-		});
+       
 
         function style(feature) {
 
@@ -203,8 +203,7 @@
                 layer.bringToFront();
             }
             
-             $.getJSON('stats.json', function (data){
-             	$.each(data.Provinces, function(key, obj) {
+           	$.each(Jsonfile.Provinces, function(key, obj) {
              		if(obj.Province == layer.feature.properties.Name){
  					var mm = obj.Membership;
  					var f = obj.Female;
@@ -219,9 +218,7 @@
  					info.update(layer.feature.properties, dens, mm, f, ml,banks,mfi,nu,u,tl,ba);
                 }
             });
-                
-             });
-              
+          
         }
 
         function resetHighlight(e) {
@@ -333,8 +330,7 @@
                 layer.bringToFront();
             }
 
-            $.getJSON('stats.json', function (data){
-            	$.each(data.Districts, function(key, obj) {
+           	$.each(Jsonfile.Districts, function(key, obj) {
              		if(obj.District == layer.feature.properties.Name){
  					var mm1 = obj.Membership;
  					var f1 = obj.Female;
@@ -349,8 +345,6 @@
  				 infoP.update(layer.feature.properties,dens, mm1, f1, ml1,banks,mfi,nu,u,tl,ba);	
                 }    
             });
-                
-             });
               
             }
 
@@ -441,8 +435,7 @@
                 layer.bringToFront();
             }
 
-            $.getJSON('stats.json', function (data){
-             	$.each(data.Districts, function(key, obj) {
+			 	$.each(Jsonfile.Districts, function(key, obj) {
              		if(obj.District == layer.feature.properties.Name){
              			
  					var mm = obj.Membership;
@@ -458,9 +451,7 @@
  					infoD.update(layer.feature.properties,dens, mm, f, ml,banks,mfi,nu,u,tl,ba);
                 }
             });
-                
-             });
-            
+          
         }
 
         function resetHighlightD(e) {
@@ -595,8 +586,7 @@
                 layer.bringToFront();
             }
 
-           $.getJSON('stats.json', function (data){
-             	$.each(data.Sectors, function(key, obj) {
+           	$.each(Jsonfile.Sectors, function(key, obj) {
              	if(obj.District == layer.feature.properties.District){
              		if(obj.Sector == layer.feature.properties.Name){
              		var mm = obj.Membership;
@@ -612,9 +602,7 @@
  					infoS.update(layer.feature.properties,dens, mm, f, ml,banks,mfi,nu,u,tl,ba);
                 } }
             });
-                
-             });
-            
+         
         }
 
         function resetHighlightS(e) {
